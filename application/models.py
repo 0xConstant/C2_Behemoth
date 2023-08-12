@@ -138,12 +138,4 @@ class Administrator(db.Model, UserMixin):
         return True
 
 
-class Message(db.Model):
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uid = db.Column(db.String(40), nullable=False)  # Assuming a 40-character SHA1 hash for UID
-    content = db.Column(db.Text, nullable=False)
-    is_from_admin = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-
 
