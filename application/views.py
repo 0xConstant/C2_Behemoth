@@ -125,27 +125,3 @@ def manage_users():
     return render_template("dashboard/user_management.html", active_page='manage_users')
 
 
-@login_required
-@app.route('/get_users')
-def get_users():
-    users = Users.query.all()  # or however you fetch your data using SQLAlchemy
-    data = [{
-    'id': user.id,
-    'username': user.username,
-    'hostname': user.hostname,
-    'uid': user.uid,
-    'os_name': user.os_name,
-    'os_version': user.os_version,
-    'os_architecture': user.os_architecture,
-    'email': user.email,
-    'public_key': user.public_key,
-    'private_key': user.private_key,
-    'crypto_address': user.crypto_address,
-    'total_payment': user.total_payment,
-    'status': user.status,
-    'amount_paid': user.amount_paid,
-    'creation_date': user.creation_date,
-    'expiration': user.expiration
-    } for user in users]
-    return jsonify(data)
-
