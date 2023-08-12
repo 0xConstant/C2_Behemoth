@@ -23,8 +23,8 @@ Databases
     <div class="tab-content" id="myTabContent">
 
         <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
-            <!-- Table for Users -->
-            <table class="table table-responsive table-striped mt-3">
+            <input type="text" id="search-input" placeholder="Search by UID...">
+            <table class="table table-responsive table-striped mt-3" id="users-table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -50,7 +50,7 @@ Databases
                         <td class="wide-col">{{ user.id }}</td>
                         <td class="wide-col">{{ user.username }}</td>
                         <td class="wide-col">{{ user.hostname }}</td>
-                        <td class="wide-col">{{ user.uid }}</td>
+                        <td class="wide-col uid-cell">{{ user.uid }}</td>
                         <td class="wide-col">{{ user.os_name }}</td>
                         <td class="wide-col">{{ user.os_version }}</td>
                         <td class="wide-col">{{ user.os_architecture }}</td>
@@ -72,8 +72,9 @@ Databases
             </table>
         </div>
         <div class="tab-pane fade" id="usersPaid" role="tabpanel" aria-labelledby="usersPaid-tab">
-            <!-- Table for Users Paid -->
-            <table class="table table-responsive table-striped mt-3">
+            <input type="text" id="search-paid-input" placeholder="Search by UID...">
+            <table class="table table-responsive table-striped mt-3" id="users-paid-table">
+
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -99,7 +100,7 @@ Databases
                         <td class="wide-col">{{ user_paid.id }}</td>
                         <td class="wide-col">{{ user_paid.username }}</td>
                         <td class="wide-col">{{ user_paid.hostname }}</td>
-                        <td class="wide-col">{{ user_paid.uid }}</td>
+                        <td class="wide-col uid-cell">{{ user_paid.uid }}</td>
                         <td class="wide-col">{{ user_paid.os_name }}</td>
                         <td class="wide-col">{{ user_paid.os_version }}</td>
                         <td class="wide-col">{{ user_paid.os_architecture }}</td>
@@ -123,7 +124,7 @@ Databases
     </div>
 </div>
     {% block scripts %}
-    <script src="{{ url_for('static', filename='spinner.js') }}"></script>
+        <script src="{{ url_for('static', filename='tab_search.js') }}"></script>
     {% endblock %}
 
 {% endblock %}
