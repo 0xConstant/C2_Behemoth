@@ -1,0 +1,94 @@
+/* Tab Styling */
+.nav-tabs {
+    border-bottom: 3px solid #293d3d;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: -3px; /* Adjust for the active tab's border */
+}
+
+.nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-radius: 0; /* Remove Bootstrap's border-radius */
+    color: #83bdbd;
+    background-color: #293d3d;
+    margin-right: 2px; /* Space between tabs */
+}
+
+.nav-tabs .nav-link:hover {
+    border: 1px solid #83bdbd;
+    background-color: #1f2e2e; /* Slightly darker background on hover */
+}
+
+.nav-tabs .nav-link.active {
+    border: 1px solid #83bdbd;
+    border-bottom-color: #293d3d; /* Make the active tab's bottom border "disappear" */
+    background-color: #293d3d; /* Active tab background color */
+    color: #fff; /* Active tab text color */
+    font-weight: bold;
+}
+
+/* Tab content styling */
+.tab-content {
+    border: 1px solid #83bdbd;
+    border-top: none; /* Remove top border since tabs handle it */
+    padding: 15px;
+    background-color: #1f2e2e; /* A slightly darker background for the content area */
+}
+
+.tab-pane {
+    color: #83bdbd; /* Content text color */
+}
+
+
+.scrollable-cell {
+    max-height: 100px; /* Adjust as needed */
+    overflow-x: auto; /* For horizontal scrolling */
+    width: 100%; /* Use the full width of the cell */
+}
+
+
+/* General table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px 15px;
+    text-align: center;
+    border: 1px solid #ddd;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    color: #fff
+}
+
+/* Header Styles */
+th {
+    background-color: #486a6a;  /* Dark background for headers */
+    color: #ecf0f1;  /* Light text for headers */
+}
+
+th:hover {
+    background-color: #344c4c;  /* Slightly darker on hover */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #344c4c;  /* Light color for even rows */
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #3e5b5b;  /* Slightly darker color for odd rows */
+}
+
+/* For horizontal scrolling if content overflows */
+.container {
+    overflow-x: auto;
+}
+
+
+.wide-col {
+    white-space: nowrap !important;
+}
+
+

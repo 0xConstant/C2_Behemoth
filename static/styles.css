@@ -1,0 +1,163 @@
+/* General Resets and Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body.bg-light {
+    background-color: #1f2e2e !important;
+    color: #000;
+}
+
+/* Anchor Styles */
+a {
+    color: #67a5a5;
+    text-decoration: none;
+}
+
+a:hover, a:focus {
+    color: #83bdbd;
+    text-decoration: underline;
+}
+
+/* Login Container */
+.login-container {
+    background-color: #293d3d;
+    padding: 20px;
+    border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: #476b6b;
+    padding: 15px 20px;
+}
+
+.navbar a {
+    margin-right: 20px;
+}
+
+/* Button Styles */
+.btn {
+    background-color: #67a5a5;
+    color: #ffffff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover, .btn:focus {
+    background-color: #83bdbd;
+}
+
+/* Input Fields Styling */
+input, textarea, select {
+    padding: 10px;
+    border: 1px solid #476b6b;
+    border-radius: 5px;
+    background-color: #1f2e2e;
+    color: #ffffff;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #67a5a5;
+    color: #ffffff !important;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #fff;
+}
+
+/* Card Styling */
+.card {
+    background-color: rgba(41, 61, 61, 0.75);
+    border: 2px solid #476b6b;
+    box-shadow: 0 0 10px #476b6b;
+    overflow: hidden;
+}
+
+.card-header {
+    background-color: #476b6b;
+    color: #ffffff;
+}
+
+.card-body {
+    color: #ffffff;
+}
+
+/* Form Styles */
+.form-control {
+    background-color: rgba(41, 61, 61, 0.85);
+    color: #ffffff;
+    border: 2px solid #476b6b;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: rgba(41, 61, 61, 0.95);
+    border-color: #67a5a5;
+    box-shadow: 0 0 5px #476b6b;
+}
+
+.form-check-label {
+    color: #ffffff;
+}
+
+.btn-primary {
+    background-color: #476b6b;
+    border: none;
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+    background-color: #669999;
+    color: #ffffff;
+}
+
+.btn.btn-primary:active,
+.btn.btn-primary.active {
+    background-color: #1f2e2e !important;
+    border-color: #a3c2c2 !important;
+}
+
+.btn.btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(90, 138, 138, 0.5) !important;
+}
+
+
+/* Error message alert */
+.custom-alert {
+    color: #ff9900;
+    background-color: #151e1e;
+    border-color: #b3cbcb;
+    font-weight: bold;
+}
+
+/* Styling the default (unchecked) state */
+.custom-control-input:not(:checked) ~ .custom-control-label::before {
+    background-color: #151e1e;
+    border: 1px solid #b3cbcb;
+}
+
+/* Changing the background of the checked checkbox */
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: #151e1e;
+    border: 1px solid #b3cbcb;
+}
+
+/* Styling the checkmark (tick) color to white */
+.custom-control-input:checked ~ .custom-control-label::after {
+    color: #ffffff;
+}
+
+
