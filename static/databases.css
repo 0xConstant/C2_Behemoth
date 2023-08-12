@@ -91,4 +91,29 @@ tbody tr:nth-child(odd) {
     white-space: nowrap !important;
 }
 
+/* Basic styling for the search bar */
+.search-bar {
+    background-color: #1f2e2e;
+    border: none;
+    box-shadow: 0 0 0 2px #00997a;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    width: 350px;
+    transition: box-shadow 0.3s, transform 0.3s;
+    outline: none;
+}
+
+/* When the search bar is focused, it'll have a glow effect */
+.search-bar:focus {
+    box-shadow: 0 0 10px #00b38f, 0 0 4px #00b38f; /* A cyan glow effect */
+    transform: scale(1.05); /* Slightly increase size to give a "pop-out" effect */
+}
+
+/* A placeholder styling to match the design */
+.search-bar::placeholder {
+    color: #b0c4d4; /* A light steel blue */
+    opacity: 1; /* Default opacity is reduced in some browsers */
+}
 

@@ -3,12 +3,19 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from datetime import timedelta
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+import warnings
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///behemoth.db'
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(hours=1)
 db = SQLAlchemy(app)
+
+with warnings.catch_warnings():                             # replace this with redis in the future
+    warnings.simplefilter("ignore")
+    limiter = Limiter(key_func=get_remote_address, app=app)
 
 
 login_manager = LoginManager()
@@ -21,6 +28,8 @@ csrf = CSRFProtect(app)
 @app.before_request
 def before_request():
     g.notifications_count = 10
+
+
 
 
 

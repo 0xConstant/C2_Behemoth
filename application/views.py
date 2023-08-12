@@ -3,7 +3,7 @@ from flask_login import login_user, current_user, login_required, logout_user
 from application.models import *
 from utilities.gen_rsa import gen_keys
 import random, string
-from app import login_manager, csrf
+from app import login_manager, csrf, limiter
 from werkzeug.security import check_password_hash
 from application.forms import LoginForm
 from application.models import Users, UsersPaid
@@ -86,6 +86,27 @@ def login():
     return render_template("login.html", form=form)
 
 
+@app.route('/send-message', methods=['POST'])
+@csrf.exempt
+@limiter.limit("1 per 10 seconds")
+def send_message():
+    data = request.get_json()
+    if not data or 'UID' not in data or 'Message' not in data:
+        return jsonify({"status": "error", "message": "Missing UID or Message in request"}), 400
+
+    user = Users.query.filter_by(uid=data['UID']).first()
+
+    if not user:
+        return jsonify({"status": "error", "message": "User does not exist"}), 404
+
+    message = Message(uid=data['UID'], content=data['Message'])
+    db.session.add(message)
+    db.session.commit()
+
+    return jsonify({"status": "success", "message": "Message sent successfully"}), 200
+
+
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -108,9 +129,9 @@ def databases():
 
 
 @login_required
-@app.route("/tickets", methods=["GET", "POST"])
-def tickets():
-    return render_template("dashboard/tickets.html", active_page='tickets')
+@app.route("/messages", methods=["GET", "POST"])
+def messages():
+    return render_template("dashboard/messages.html", active_page='tickets')
 
 
 @login_required
@@ -125,3 +146,8 @@ def manage_users():
     return render_template("dashboard/user_management.html", active_page='manage_users')
 
 
+@app.errorhandler(429)
+def ratelimit_error(e):
+    return jsonify({"status": "error", "message": "Too many requests. Please slow down."}), 429
+
+#
