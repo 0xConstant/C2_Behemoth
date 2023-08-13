@@ -5,20 +5,21 @@ from flask_wtf.csrf import CSRFProtect
 from datetime import timedelta
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-import warnings
 from application.utils import human_readable_date
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///behemoth.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://roger:jackass#XX1717@localhost/behemoth'
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(hours=1)
 db = SQLAlchemy(app)
 app.jinja_env.globals.update(human_readable_date=human_readable_date)
 
 
-with warnings.catch_warnings():                             # replace this with redis in the future
-    warnings.simplefilter("ignore")
-    limiter = Limiter(key_func=get_remote_address, app=app)
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    storage_uri="redis://:jackass%23XX1717@localhost:6379/0",
+)
 
 
 login_manager = LoginManager()

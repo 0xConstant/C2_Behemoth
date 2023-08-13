@@ -9,7 +9,6 @@ from application.forms import LoginForm
 from application.models import Users, UsersPaid
 
 
-
 @app.route("/new-user", methods=["POST"])
 @csrf.exempt
 def new_user():
@@ -41,6 +40,8 @@ def new_user():
 
 
 @app.route("/check-payment", methods=["POST"])
+@csrf.exempt
+@limiter.limit("2 per 1 hour")
 def check_payment():
     try:
         data = request.json
