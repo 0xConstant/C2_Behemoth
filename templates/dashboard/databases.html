@@ -23,6 +23,11 @@ Databases
     <div class="tab-content" id="myTabContent">
 
         <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
+            <div class="stats">
+                <strong>Total Entries:</strong> {{ users_count }} <br>
+                <strong>Latest update:</strong> {{ human_readable_date(last_user_date) if last_user_date else 'N/A' }}
+            </div>
+            <br>
             <input type="text" id="search-input" class="search-bar" placeholder="Search by UID...">
             <table class="table table-responsive table-striped mt-3" id="users-table">
                 <thead>
@@ -72,6 +77,11 @@ Databases
             </table>
         </div>
         <div class="tab-pane fade" id="usersPaid" role="tabpanel" aria-labelledby="usersPaid-tab">
+            <div class="stats">
+                <strong>Total Entries:</strong> {{ users_paid_count }} <br>
+                <strong>Latest update:</strong> {{ human_readable_date(last_user_paid_date) if last_user_paid_date else 'N/A' }}
+            </div>
+            <br>
             <input type="text" id="search-paid-input" class="search-bar" placeholder="Search by UID...">
             <table class="table table-responsive table-striped mt-3" id="users-paid-table">
 

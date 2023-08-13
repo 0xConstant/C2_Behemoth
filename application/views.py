@@ -104,12 +104,31 @@ def dashboard():
 def databases():
     users = Users.query.all()
     users_paid = UsersPaid.query.all()
-    return render_template("dashboard/databases.html", active_page='databases', users=users, users_paid=users_paid)
 
-@login_required
-@app.route("/notifications", methods=["GET", "POST"])
-def notifications():
-    return render_template("dashboard/notifications.html", active_page='notifications', notifications_count=10)
+    # Get counts and latest entry dates for Users table
+    users_count = len(users)
+    last_user_date = None
+    if users_count > 0:
+        last_user = Users.query.order_by(Users.creation_date.desc()).first()
+        last_user_date = last_user.creation_date
+
+    # Get counts and latest entry dates for UsersPaid table
+    users_paid_count = len(users_paid)
+    last_user_paid_date = None
+    if users_paid_count > 0:
+        last_user_paid = UsersPaid.query.order_by(UsersPaid.payment_date.desc()).first()
+        last_user_paid_date = last_user_paid.payment_date
+
+    return render_template(
+        "dashboard/databases.html",
+        active_page='databases',
+        users=users,
+        users_paid=users_paid,
+        users_count=users_count,
+        last_user_date=last_user_date,
+        users_paid_count=users_paid_count,
+        last_user_paid_date=last_user_paid_date
+    )
 
 
 @app.errorhandler(429)
