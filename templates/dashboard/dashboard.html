@@ -4,8 +4,90 @@
 Dashboard
 {% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='databases.css') }}">
+
+    <style>
+        body, html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    .table-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    #dummy-table {
+        max-width: 100%;
+        width: 100%;
+    }
+    </style>
+{% endblock %}
+
 {% block content %}
-    <!-- Your dashboard-specific content goes here -->
-    <h1>Welcome to the Dashboard!</h1>
-    <!-- ... other dashboard contents ... -->
+    <h1>Operations Command</h1>
+    <br>
+    <br>
+    <div class="row">
+        <!-- First column -->
+        <div class="col-md-4">
+            <div class="info-box">
+                <h4>Total Targets Worldwide</h4>
+                <p>{{ users_data|length }}</p>
+            </div>
+        </div>
+
+        <!-- Second column -->
+        <div class="col-md-4">
+            <div class="info-box">
+                <h4>Highest encrypted files</h4>
+                <p>{{ max_files }}</p>
+            </div>
+        </div>
+
+        <!-- Third column -->
+        <div class="col-md-4">
+            <div class="info-box">
+                <h4>Total files worldwide</h4>
+                <p>{{ total_files }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+    <table class="table table-responsive table-striped mt-3" id="dummy-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>UID</th>
+                <th>Total Files</th>
+                <th>IP</th>
+                <th>City</th>
+                <th>Region</th>
+                <th>Country</th>
+                <th>Postal</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users_data %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.uid }}</td>
+                <td>{{ user.files }}</td>
+                <td>{{ user.ip }}</td>
+                <td>{{ user.city }}</td>
+                <td>{{ user.region }}</td>
+                <td>{{ user.country }}</td>
+                <td>{{ user.postal }}</td>
+                <td>{{ user.latitude }}</td>
+                <td>{{ user.longitude }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
