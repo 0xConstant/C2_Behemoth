@@ -32,7 +32,7 @@ def new_user():
             return jsonify({"error": "UID already exists."}), 400
 
         keys = gen_keys()
-        expiration_date = datetime.now(tz=tz) + timedelta(minutes=1)
+        expiration_date = datetime.now(tz=tz) + timedelta(minutes=30)
 
         user = Users(
             username=data.get("Username"),

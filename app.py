@@ -14,11 +14,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://roger:jackass#XX1717@lo
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(hours=1)
 db = SQLAlchemy(app)
 app.jinja_env.globals.update(human_readable_date=human_readable_date)
-app.config["CELERY_BROKER_URL"] = "redis://:jackass%23XX1717@localhost:6379/0"
-app.config["CELERY_RESULT_BACKEND"] = "redis://:jackass%23XX1717@localhost:6379/0"
+app.config["broker_url"] = "redis://:jackass%23XX1717@localhost:6379/0"
+app.config["result_backend"] = "redis://:jackass%23XX1717@localhost:6379/0"
 
 
-celery = Celery(app.name, broker=app.config["CELERY_BROKER_URL"])
+celery = Celery(app.name, broker=app.config["broker_url"])
 celery.conf.update(app.config)
 
 
