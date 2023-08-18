@@ -2,7 +2,6 @@ from flask import render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_user, current_user, login_required, logout_user
 from application.models import *
 from utilities.gen_rsa import gen_keys
-import random, string
 from app import login_manager, csrf, limiter, app
 from werkzeug.security import check_password_hash
 from application.forms import LoginForm
@@ -48,7 +47,7 @@ def new_user():
         if geolocation.get("country") == "Russia":
             payment = 50
 
-        wallet = gen_wallet()
+        wallet = gen_wallet(sanitized_data.get("uid"))
 
         user = Users(
             username=sanitized_data.get("username"),
