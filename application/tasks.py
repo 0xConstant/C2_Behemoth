@@ -1,6 +1,6 @@
 from app import celery, db, app
 from application.models import Users, UsersPaid
-from utilities.wallet_api import wallet_api
+from utilities.wallet_api import wallet_balance
 from datetime import datetime
 import pytz
 from celery.schedules import crontab
@@ -29,7 +29,7 @@ def check_wallet():
 		users = Users.query.all()
 		for user in users:
 			try:
-				balance = wallet_api(user.crypto_address)
+				balance = wallet_balance(user.address_index)
 				if balance > 0:
 					user.amount_paid = balance
 					if user.amount_paid >= user.total_payment and not user.status:
@@ -48,6 +48,7 @@ def check_wallet():
 							total_payment=user.total_payment,
 							status=True,
 							amount_paid=user.amount_paid,
+							address_index=user.address_index,
 							creation_date=user.creation_date,
 							payment_date=datetime.now(tz=tz)
 						)

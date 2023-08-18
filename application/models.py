@@ -1,7 +1,5 @@
-from app import db, app
-from datetime import datetime, timedelta
-from apscheduler.schedulers.background import BackgroundScheduler
-from utilities.wallet_api import wallet_api
+from app import db
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
@@ -24,12 +22,13 @@ class Users(db.Model):
     total_payment = db.Column(db.Float, nullable=False, default=0.0)
     status = db.Column(db.Boolean, default=False, nullable=False)
     amount_paid = db.Column(db.Float, default=0.0, nullable=False)
+    address_index = db.Column(db.Integer, unique=True)
     # creation date
     creation_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     expiration = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, username, hostname, uid, os_name, os_version, os_architecture, email, ip_address, public_key, private_key,
-                 crypto_address, total_payment, status, amount_paid, creation_date, expiration):
+                 crypto_address, total_payment, status, amount_paid, address_index, creation_date, expiration):
         self.username = username
         self.hostname = hostname
         self.uid = uid
@@ -44,6 +43,7 @@ class Users(db.Model):
         self.total_payment = total_payment
         self.status = status
         self.amount_paid = amount_paid
+        self.address_index = address_index
         self.creation_date = creation_date
         self.expiration = expiration
 
@@ -67,6 +67,7 @@ class UsersPaid(db.Model):
     total_payment = db.Column(db.Float, nullable=False, default=0.0)
     status = db.Column(db.Boolean, default=False, nullable=False)
     amount_paid = db.Column(db.Float, default=0.0, nullable=False)
+    address_index = db.Column(db.Integer, unique=True)
     creation_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     payment_date = db.Column(db.DateTime, nullable=False)
 

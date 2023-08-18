@@ -3,7 +3,7 @@ from flask_login import login_user, current_user, login_required, logout_user
 from application.models import *
 from utilities.gen_rsa import gen_keys
 import random, string
-from app import login_manager, csrf, limiter
+from app import login_manager, csrf, limiter, app
 from werkzeug.security import check_password_hash
 from application.forms import LoginForm
 from application.models import Users, UsersPaid, UsersData
@@ -11,6 +11,8 @@ from utilities.get_ip import user_geolocation
 from application.tasks import schedule_termination
 import pytz
 from bleach import clean
+from datetime import timedelta
+from utilities.wallet_api import gen_wallet
 
 
 tz = pytz.timezone('America/Toronto')
@@ -46,6 +48,8 @@ def new_user():
         if geolocation.get("country") == "Russia":
             payment = 50
 
+        wallet = gen_wallet()
+
         user = Users(
             username=sanitized_data.get("username"),
             hostname=sanitized_data.get("hostname"),
@@ -57,10 +61,11 @@ def new_user():
             ip_address=user_ip,
             public_key=keys[1],
             private_key=keys[0],
-            crypto_address=''.join(random.choices(string.ascii_letters + string.digits, k=16)),
+            crypto_address=wallet["wallet_address"],
             total_payment=payment,
             status=False,
             amount_paid=0,
+            address_index=wallet["address_index"],
             creation_date=datetime.now(tz=tz),
             expiration=expiration_date
         )
