@@ -7,16 +7,22 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from application.utils import human_readable_date
 from celery import Celery
+from dotenv import load_dotenv
+from os import environ
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://roger:jackass#XX1717@localhost/behemoth'
-app.config['REMEMBER_COOKIE_DURATION'] = timedelta(hours=1)
-db = SQLAlchemy(app)
-app.jinja_env.globals.update(human_readable_date=human_readable_date)
-app.config["broker_url"] = "redis://:jackass%23XX1717@localhost:6379/0"
-app.config["result_backend"] = "redis://:jackass%23XX1717@localhost:6379/0"
 
+load_dotenv()
+
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get("DATABASE_URL")
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(hours=1)
+app.config["broker_url"] = environ.get("REDIS_URL")
+app.config["result_backend"] = environ.get("REDIS_URL")
+
+db = SQLAlchemy(app)
+
+app.jinja_env.globals.update(human_readable_date=human_readable_date)
 
 celery = Celery(app.name, broker=app.config["broker_url"])
 celery.conf.update(app.config)
@@ -25,14 +31,14 @@ celery.conf.update(app.config)
 limiter = Limiter(
     key_func=get_remote_address,
     app=app,
-    storage_uri="redis://:jackass%23XX1717@localhost:6379/0",
+    storage_uri=environ.get("REDIS_URL"),
 )
 
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-app.secret_key = "EhYnSGGYwrjFlOJ0Md4PpKqGBv1ZaPti"
+app.secret_key = environ.get("SECRET_KEY")
 csrf = CSRFProtect(app)
 
 
