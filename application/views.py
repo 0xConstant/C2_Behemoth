@@ -8,7 +8,7 @@ from application.forms import LoginForm
 from application.models import Users, UsersPaid, UsersData
 from utilities.get_ip import user_geolocation
 from application.tasks import schedule_termination
-import pytz
+import pytz, logging
 from bleach import clean
 from datetime import timedelta
 from utilities.wallet_api import gen_wallet
@@ -85,6 +85,7 @@ def new_user():
             db.session.add(user_data)
             db.session.commit()
         except Exception as e:
+            logging.error(e)
             db.session.rollback()
             return jsonify({"error": "Database error"}), 400
 
@@ -93,8 +94,8 @@ def new_user():
         return jsonify({"message": "User and keys added successfully."}), 201
 
     except Exception as e:
+        logging.error(e)
         db.session.rollback()
-        print(e)
         return jsonify({"error": "An unexpected error occurred"}), 400
 
 
@@ -121,6 +122,7 @@ def check_payment():
             return jsonify({"error": "Payment not yet complete."}), 400
 
     except Exception as e:
+        logging.error(e)
         return jsonify({"error": "Request failed, try again."}), 400
 
 
