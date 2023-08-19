@@ -31,7 +31,7 @@ def new_user():
         if not data:
             return jsonify({"error": "No data provided."}), 400
 
-        required_keys = ["username", "hostname", "uid", "os", "version", "architecture", "email"]
+        required_keys = ["username", "hostname", "uid", "os", "version", "architecture", "email", "files"]
         if not all(key in data for key in required_keys):
             return jsonify({"error": "Missing required parameters."}), 400
 
@@ -85,7 +85,7 @@ def new_user():
             db.session.add(user_data)
             db.session.commit()
         except Exception as e:
-            logging.error(e)
+            print(e)
             db.session.rollback()
             return jsonify({"error": "Database error"}), 400
 
@@ -94,7 +94,7 @@ def new_user():
         return jsonify({"message": "User and keys added successfully."}), 201
 
     except Exception as e:
-        logging.error(e)
+        print(e)
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred"}), 400
 
@@ -122,7 +122,7 @@ def check_payment():
             return jsonify({"error": "Payment not yet complete."}), 400
 
     except Exception as e:
-        logging.error(e)
+        print(e)
         return jsonify({"error": "Request failed, try again."}), 400
 
 

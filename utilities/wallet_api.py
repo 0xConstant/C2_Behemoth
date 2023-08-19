@@ -17,8 +17,7 @@ def convert_xmr_usd(amount):
         usd = Decimal(amount) * Decimal(exchange_rate)
         usd = round(usd, 2)
     except Exception as e:
-        logging.error(e)
-        pass
+        print(e)
     return usd
 
 
@@ -43,8 +42,7 @@ def wallet_balance(account_index):
         resp = requests.post(url=url, headers=headers, data=json.dumps(data), timeout=10).json()
         balance = resp["result"]["balance"] / 1e12
     except Exception as e:
-        logging.error(e)
-        pass
+        print(e)
     return convert_xmr_usd(balance)
 
 
@@ -72,8 +70,7 @@ def gen_wallet(account_name):
             "wallet_address": resp["result"]["address"]
         }
     except Exception as e:
-        logging.error(e)
-        pass
+        print(e)
     return account_info
 
 

@@ -9,7 +9,6 @@ from application.utils import human_readable_date
 from celery import Celery
 from dotenv import load_dotenv
 from os import environ
-import logging
 
 
 app = Flask(__name__)
@@ -42,16 +41,12 @@ login_manager.login_view = 'login'
 app.secret_key = environ.get("SECRET_KEY")
 csrf = CSRFProtect(app)
 
-logging.basicConfig(
-    filename='error.log', level=logging.ERROR, format='%(asctime)s %(levelname)s: %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
-
 
 from application.models import Users
 from application import views
 
 with app.app_context():
+    db.drop_all()
     db.create_all()
 
 
