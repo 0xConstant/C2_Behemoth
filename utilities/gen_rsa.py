@@ -35,10 +35,7 @@ def to_base64(input_data):
 
 def pub_to_xml(public_key_pem):
     publicKey = RSA.import_key(public_key_pem)
-    xml_format = '''<RSAKeyValue>
-    <Modulus>{modulus}</Modulus>
-    <Exponent>{exponent}</Exponent>
-    </RSAKeyValue>'''
+    xml_format = '''<RSAKeyValue><Modulus>{modulus}</Modulus><Exponent>{exponent}</Exponent></RSAKeyValue>'''
 
     return xml_format.format(
         modulus=to_base64(number.long_to_bytes(publicKey.n)),
@@ -69,7 +66,7 @@ def priv_key_to_xml(private_key_pem):
         element = ET.SubElement(xml_root, tag)
         element.text = to_base64(component.to_bytes((component.bit_length() + 7) // 8, 'big'))
 
-    return ET.tostring(xml_root).decode("utf8")
+    return ET.tostring(xml_root).decode("utf8").replace('\n', '').replace(' ', '')
 
 
 def gen_keys():
@@ -79,4 +76,4 @@ def gen_keys():
     return user_priv_key, user_pub_key
 
 
-# print(gen_keys())
+#print(gen_keys())
