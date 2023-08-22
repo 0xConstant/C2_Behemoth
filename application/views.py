@@ -46,7 +46,7 @@ def new_user():
         tz = datetime.now().astimezone().tzinfo
         expiration_date = datetime.now(tz=tz) + timedelta(hours=8)
 
-        payment = 200
+        payment = 25
         if geolocation.get("country") == "Russia":
             payment = 50
 
@@ -128,11 +128,11 @@ def check_payment():
         paid_user = UsersPaid.query.filter_by(uid=uid).first()
         user = Users.query.filter_by(uid=uid).first()
 
-        #if paid_user and paid_user.status:
-        if user and user.status:
+        # if user and user.status:
+        if paid_user and paid_user.status:
             return jsonify({
                 "STATUS": "SUCCESS",
-                "PRIVATE_KEY": str(user.private_key)
+                "PRIVATE_KEY": str(paid_user.private_key)
             }), 200
         elif user:
             return jsonify({"status": "Payment is insufficient.", "amount_paid": str(user.amount_paid)}), 200
