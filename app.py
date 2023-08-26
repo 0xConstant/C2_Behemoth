@@ -5,7 +5,7 @@ from flask_wtf.csrf import CSRFProtect
 from datetime import timedelta
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from application.utils import human_readable_date
+from utilities.human_readable_date import human_readable_date
 from celery import Celery
 from dotenv import load_dotenv
 from os import environ
