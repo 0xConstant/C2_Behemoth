@@ -8,7 +8,7 @@ from application.forms import LoginForm
 from application.models import Users, UsersPaid, UsersData
 from utilities.get_ip import user_geolocation
 from application.tasks import schedule_termination
-import pytz, logging
+import pytz
 from bleach import clean
 from datetime import timedelta
 from utilities.wallet_api import gen_wallet
