@@ -16,7 +16,7 @@ app = Flask(__name__)
 load_dotenv()
 
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(hours=1)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get("DATABASE_URI")
 app.config["broker_url"] = environ.get("REDIS_URL")
 app.config["result_backend"] = environ.get("REDIS_URL")
 
