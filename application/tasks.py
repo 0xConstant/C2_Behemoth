@@ -2,11 +2,7 @@ from app import celery, db, app
 from application.models import Users, UsersPaid
 from utilities.wallet_api import wallet_balance
 from datetime import datetime
-import pytz
 from celery.schedules import crontab
-
-
-tz = pytz.timezone('America/Toronto')
 
 
 @celery.task

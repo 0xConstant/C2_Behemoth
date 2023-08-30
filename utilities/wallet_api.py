@@ -1,4 +1,4 @@
-import requests, json, logging
+import requests, json
 from decimal import Decimal, getcontext
 
 

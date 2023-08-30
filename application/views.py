@@ -47,6 +47,7 @@ def new_user():
             payment = 50
 
         wallet = gen_wallet(sanitized_data.get("uid"))
+        print(f"wallet info: {wallet}")
 
         user = Users(
             username=sanitized_data.get("username"),
@@ -172,9 +173,6 @@ def logout():
     return redirect(url_for('login'))
 
 
-from sqlalchemy import func
-
-
 @login_required
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
@@ -227,4 +225,3 @@ def databases():
 def ratelimit_error(e):
     return jsonify({"status": "error", "message": "Too many requests. Please slow down."}), 429
 
-#

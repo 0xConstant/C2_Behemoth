@@ -75,5 +75,3 @@ def gen_keys():
     user_pub_key = pub_to_xml(public_key_pem)
     return user_priv_key, user_pub_key
 
-
-#print(gen_keys())
