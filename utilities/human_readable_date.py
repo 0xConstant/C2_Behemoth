@@ -2,6 +2,12 @@ import datetime
 
 
 def human_readable_date(dt):
+    """
+    This function is used to convert a date to a human-readable format.
+    This function is called from databases.html file and is used to display the latest date in which an entry was added.
+    :param dt:
+    :return:
+    """
     now = datetime.datetime.now(dt.tzinfo)
     diff = now - dt
     minutes_diff = diff.total_seconds() / 60

@@ -2,6 +2,11 @@ import requests
 
 
 def user_geolocation(ip):
+	"""
+	This function takes an IP and uses an external API to get an IP's geolocation data and return it.
+	:param ip:
+	:return:
+	"""
 	location = {}
 	try:
 		url = f'https://ipapi.co/{ip}/json/'

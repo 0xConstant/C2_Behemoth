@@ -8,6 +8,10 @@ from Crypto.Util import number
 
 
 def generate_rsa_keys():
+    """
+    This function generates unique RSA private/public keys and returns them as a tuple.
+    :return:
+    """
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=3072,
@@ -30,10 +34,20 @@ def generate_rsa_keys():
 
 
 def to_base64(input_data):
+    """
+    This function converts a given input to base64.
+    :param input_data:
+    :return:
+    """
     return base64.b64encode(input_data).decode('utf-8')
 
 
 def pub_to_xml(public_key_pem):
+    """
+    This function converts a public key from PEM format to XML format which works well with .NET
+    :param public_key_pem:
+    :return:
+    """
     publicKey = RSA.import_key(public_key_pem)
     xml_format = '''<RSAKeyValue><Modulus>{modulus}</Modulus><Exponent>{exponent}</Exponent></RSAKeyValue>'''
 
@@ -44,6 +58,11 @@ def pub_to_xml(public_key_pem):
 
 
 def priv_key_to_xml(private_key_pem):
+    """
+    This function converts a private key from PEM format to XML format which works well with .NET
+    :param private_key_pem:
+    :return:
+    """
     private_key_bytes = private_key_pem.encode('utf-8')
     private_key = serialization.load_pem_private_key(
         private_key_bytes, password=None, backend=default_backend()
@@ -70,6 +89,10 @@ def priv_key_to_xml(private_key_pem):
 
 
 def gen_keys():
+    """
+    This function makes a call to generate RSA keys and return them.
+    :return:
+    """
     private_key_pem, public_key_pem = generate_rsa_keys()
     user_priv_key = priv_key_to_xml(private_key_pem)
     user_pub_key = pub_to_xml(public_key_pem)

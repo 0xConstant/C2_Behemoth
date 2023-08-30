@@ -1,4 +1,9 @@
 def format_date(expiration_date):
+    """
+    This function returns a human readable date that's going to be used in Agent.
+    :param expiration_date:
+    :return:
+    """
     formatted_date = expiration_date.strftime('%I:%M %p - %B %d')
     formatted_date = formatted_date.replace(' 0', ' ')
     day = expiration_date.day
