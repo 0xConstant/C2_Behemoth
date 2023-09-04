@@ -2,6 +2,10 @@ from app import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+import pytz
+
+
+tz = pytz.timezone('America/Toronto')
 
 
 class Users(db.Model):
@@ -75,4 +79,5 @@ class Decrypter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
     filename = db.Column(db.String(32))
+    creation = db.Column(db.DateTime, default=datetime.now(tz=tz))
 

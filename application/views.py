@@ -4,7 +4,6 @@ from application.models import *
 from utilities.gen_rsa import gen_keys
 from app import login_manager, csrf, limiter, app
 from werkzeug.security import check_password_hash
-from application.forms import LoginForm
 from application.models import Users, UsersPaid, UsersData
 from utilities.get_ip import user_geolocation
 from application.tasks import schedule_termination
@@ -169,7 +168,6 @@ def load_user(user_id):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    form = LoginForm()
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
     if request.method == "POST":
@@ -184,7 +182,7 @@ def login():
         else:
             flash('Invalid username or password.', 'danger')
 
-    return render_template("login.html", form=form)
+    return render_template("login.html")
 
 
 @app.route('/logout')
@@ -240,6 +238,37 @@ def databases():
         users_paid_count=users_paid_count,
         last_user_paid_date=last_user_paid_date
     )
+
+
+@login_required
+@app.route("/script_editor", methods=["GET", "POST"])
+def script_editor():
+    decrypter = Decrypter.query.first()  # Fetch the first record
+
+    # If POST request, process form data and update the database
+    if request.method == "POST":
+        filename = request.form.get('filename')
+        content = request.form.get('content')
+
+        if not filename or not content:
+            flash('Filename and content are required!', 'danger')
+            return render_template("dashboard/script.html", decrypter=decrypter, active_page='script_editor')
+
+        # Update or create new record based on whether decrypter exists
+        if decrypter:
+            decrypter.filename = filename
+            decrypter.content = content
+            decrypter.creation = datetime.now(tz=tz)  # Update the timestamp
+        else:
+            new_decrypter = Decrypter(filename=filename, content=content, creation=datetime.now(tz=tz))
+            db.session.add(new_decrypter)
+
+        db.session.commit()
+        flash('Script updated successfully!', 'success')
+        return redirect(url_for('script_editor'))
+
+    return render_template("dashboard/script.html", decrypter=decrypter, active_page='script_editor')
+
 
 
 @app.errorhandler(429)

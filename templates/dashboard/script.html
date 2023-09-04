@@ -1,0 +1,53 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}
+    Script Editor
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <h1 class="my-4">Decrypter PowerShell Script</h1>
+
+    <form method="post" action="{{ url_for('script_editor') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-group">
+            <label for="filename">Filename:</label>
+            <input type="text" class="form-control" id="filename" name="filename"
+                   value="{{ decrypter.filename if decrypter else '' }}" required>
+        </div>
+        <div class="form-group">
+            <label for="content">Script Content:</label>
+            <textarea class="form-control" id="content" name="content"
+                      rows="10">{{ decrypter.content if decrypter else '' }}</textarea>
+        </div>
+        {% if decrypter and decrypter.creation %}
+            <p>Last Modified: {{ decrypter.creation.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+
+{% endblock %}
+
