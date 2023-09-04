@@ -53,7 +53,6 @@ def new_user():
         user = Users(
             username=sanitized_data.get("username"),
             hostname=sanitized_data.get("hostname"),
-            password=password,
             uid=sanitized_data.get("uid"),
             email=sanitized_data.get("email"),
             ip_address=user_ip,
@@ -103,21 +102,21 @@ def new_user():
         return jsonify({"error": "An unexpected error occurred"}), 400
 
 
-@app.route("/status/<uid>", methods=["GET", "POST"])
+@app.route("/status/<uid>", methods=["GET"])
 @csrf.exempt
 @limiter.limit("1000 per 1 hour")
 def status(uid):
     try:
-        uid = clean('uid')
+        uid = clean(uid)
         paid_user = UsersPaid.query.filter_by(uid=uid).first()
         user = Users.query.filter_by(uid=uid).first()
-        if not uid or not paid_user or not user:
+        if not uid or not user:
             return jsonify({"error": "Invalid UID or UID doesn't exist."}), 403
 
     except Exception as e:
         print(e)
         return jsonify({"error": "Request failed, try again."}), 400
-    return render_template("status.html", user=user, paid_user=paid_user)
+    return render_template("status.html", user=user, paid_user=paid_user, date=format_date)
 
 
 @login_manager.user_loader

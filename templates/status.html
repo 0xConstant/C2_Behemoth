@@ -1,10 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Payment Status</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <style>
+        .countdown {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: auto;
+            margin-bottom: 20px;
+        }
+
+        .countdown span {
+            background-color: #ffffff;
+            padding: 5px 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+
+    <script>
+        {% if user %}
+            document.addEventListener('DOMContentLoaded', function() {
+                var expirationDate = new Date("{{ user.expiration }}");
+                var now = new Date();
+
+                var duration = expirationDate - now;
+
+                var hoursDisplay = document.querySelector('#hours');
+                var minutesDisplay = document.querySelector('#minutes');
+                var secondsDisplay = document.querySelector('#seconds');
+                var millisecondsDisplay = document.querySelector('#milliseconds');
+
+                var countdown = setInterval(function() {
+                    duration -= 50;
+
+                    var hours = Math.floor(duration / (1000 * 60 * 60));
+                    var minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
+                    var seconds = Math.floor((duration % (1000 * 60)) / 1000);
+                    var milliseconds = duration % 1000;
+
+                    hoursDisplay.textContent = hours < 10 ? "0" + hours + " hours" : hours + " hours";
+                    minutesDisplay.textContent = minutes < 10 ? "0" + minutes + " minutes" : minutes + " minutes";
+                    secondsDisplay.textContent = seconds < 10 ? "0" + seconds + " seconds" : seconds + " seconds";
+                    millisecondsDisplay.textContent = milliseconds < 100 ? (milliseconds < 10 ? "00" + milliseconds : "0" + milliseconds) + " milliseconds" : milliseconds + " milliseconds";
+
+                    if (duration <= 0) {
+                        clearInterval(countdown);
+                    }
+                }, 50);
+            });
+        {% endif %}
+    </script>
 </head>
+
 <body>
 
+    <div class="container mt-5">
+        <div class="header text-center">
+            <h1>{% if paid_user %}Payment Success{% else %}Data Expiration{% endif %}</h1>
+            {% if user %}
+                <div class="countdown">
+                    <span id="hours">00 hours</span>
+                    <span id="minutes">00 minutes</span>
+                    <span id="seconds">00 seconds</span>
+                    <span id="milliseconds">00 milliseconds</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>User Data</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Payment status</td>
+                    <td>{{ paid_user.status if paid_user else user.status }}</td>
+                </tr>
+                <tr>
+                    <td>Total Payment</td>
+                    <td>{{ paid_user.total_payment if paid_user else user.total_payment }}</td>
+                </tr>
+                <tr>
+                    <td>Amount Paid</td>
+                    <td>{{ paid_user.amount_paid if paid_user else user.amount_paid }}</td>
+                </tr>
+                <tr>
+                    {% if paid_user %}
+                        <td>Payment Date</td>
+                        <td>{{ date(paid_user.payment_date) }}</td>
+                    {% else %}
+                        <td>Deadline</td>
+                        <td>{{ date(user.expiration) }}</td>
+                    {% endif %}
+                </tr>
+            </tbody>
+        </table>
+
+        <p>Crypto Address: {{ paid_user.crypto_address if paid_user else user.crypto_address }}</p>
+        <hr>
+        <footer>
+            {% if paid_user %}
+                <button type="button" class="btn btn-primary">Button 1</button>
+                <button type="button" class="btn btn-secondary">Button 2</button>
+                <button type="button" class="btn btn-success">Button 3</button>
+            {% endif %}
+        </footer>
+    </div>
 </body>
+
 </html>

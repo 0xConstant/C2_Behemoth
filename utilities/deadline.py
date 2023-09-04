@@ -1,11 +1,11 @@
 def format_date(expiration_date):
     """
-    This function returns a human readable date that's going to be used in Agent.
+    This function returns a human-readable date that's going to be used to show the deadline.
     :param expiration_date:
     :return:
     """
-    formatted_date = expiration_date.strftime('%I:%M %p - %B %d')
-    formatted_date = formatted_date.replace(' 0', ' ')
+    formatted_date = expiration_date.strftime('%I:%M %p, %A - %B %d %Y')
+    formatted_date = formatted_date.replace(' 0', ' ')  # Remove leading zero for days
     day = expiration_date.day
     if 10 <= day % 100 <= 20:
         suffix = 'th'

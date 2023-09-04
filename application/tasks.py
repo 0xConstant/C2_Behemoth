@@ -3,6 +3,10 @@ from application.models import Users, UsersPaid
 from utilities.wallet_api import wallet_balance
 from datetime import datetime
 from celery.schedules import crontab
+import pytz
+
+
+tz = pytz.timezone('America/Toronto')
 
 
 @celery.task
