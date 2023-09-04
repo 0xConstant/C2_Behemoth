@@ -271,6 +271,12 @@ def script_editor():
                            active_page='script_editor', date=format_date)
 
 
+@login_required
+@app.route("/builder", methods=["GET", "POST"])
+def builder():
+    keys = gen_keys()
+    return render_template("dashboard/builder.html", active_page='builder', keys=keys)
+
 
 @app.errorhandler(429)
 def ratelimit_error(e):

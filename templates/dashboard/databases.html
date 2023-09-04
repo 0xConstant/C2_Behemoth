@@ -1,23 +1,25 @@
 {% extends "dashboard/base.html" %}
 
 {% block title %}
-Databases
+    Databases
 {% endblock %}
 
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ url_for('static', filename='databases.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='databases.css') }}">
 {% endblock %}
 
 {% block content %}
-<!-- Your dashboard-specific content goes here -->
-<h1>Databases</h1>
-<div class="container mt-5">
+    <!-- Your dashboard-specific content goes here -->
+    <h1>Databases</h1>
+    <br>
     <ul class="nav nav-tabs" id="myTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users" aria-selected="true">Users</a>
+            <a class="nav-link active" id="users-tab" data-toggle="tab" href="#users" role="tab" aria-controls="users"
+               aria-selected="true">Users</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="usersPaid-tab" data-toggle="tab" href="#usersPaid" role="tab" aria-controls="usersPaid" aria-selected="false">Users Paid</a>
+            <a class="nav-link" id="usersPaid-tab" data-toggle="tab" href="#usersPaid" role="tab"
+               aria-controls="usersPaid" aria-selected="false">Users Paid</a>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
@@ -31,26 +33,26 @@ Databases
             <input type="text" id="search-input" class="search-bar" placeholder="Search by UID...">
             <table class="table table-responsive table-striped mt-3" id="users-table">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th class="wide-col">Username</th>
-                        <th class="wide-col">Hostname</th>
-                        <th class="wide-col">UID</th>
-                        <th class="wide-col">OS Name</th>
-                        <th class="wide-col">OS Version</th>
-                        <th class="wide-col">OS Architecture</th>
-                        <th class="wide-col">Email</th>
-                        <th class="wide-col">Private Key</th>
-                        <th class="wide-col">Crypto Address</th>
-                        <th class="wide-col">Total Payment</th>
-                        <th class="wide-col">Status</th>
-                        <th class="wide-col">Amount Paid</th>
-                        <th class="wide-col">Creation Date</th>
-                        <th class="wide-col">Expiration Date</th>
-                    </tr>
+                <tr>
+                    <th>ID</th>
+                    <th class="wide-col">Username</th>
+                    <th class="wide-col">Hostname</th>
+                    <th class="wide-col">UID</th>
+                    <th class="wide-col">OS Name</th>
+                    <th class="wide-col">OS Version</th>
+                    <th class="wide-col">OS Architecture</th>
+                    <th class="wide-col">Email</th>
+                    <th class="wide-col">Private Key</th>
+                    <th class="wide-col">Crypto Address</th>
+                    <th class="wide-col">Total Payment</th>
+                    <th class="wide-col">Status</th>
+                    <th class="wide-col">Amount Paid</th>
+                    <th class="wide-col">Creation Date</th>
+                    <th class="wide-col">Expiration Date</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {% for user in users %}
+                {% for user in users %}
                     <tr>
                         <td class="wide-col">{{ user.id }}</td>
                         <td class="wide-col">{{ user.username }}</td>
@@ -72,40 +74,41 @@ Databases
                         <td class="wide-col">{{ user.creation_date }}</td>
                         <td class="wide-col">{{ user.expiration }}</td>
                     </tr>
-                    {% endfor %}
+                {% endfor %}
                 </tbody>
             </table>
         </div>
         <div class="tab-pane fade" id="usersPaid" role="tabpanel" aria-labelledby="usersPaid-tab">
             <div class="stats">
                 <strong>Total Entries:</strong> {{ users_paid_count }} <br>
-                <strong>Latest update:</strong> {{ human_readable_date(last_user_paid_date) if last_user_paid_date else 'N/A' }}
+                <strong>Latest
+                    update:</strong> {{ human_readable_date(last_user_paid_date) if last_user_paid_date else 'N/A' }}
             </div>
             <br>
             <input type="text" id="search-paid-input" class="search-bar" placeholder="Search by UID...">
             <table class="table table-responsive table-striped mt-3" id="users-paid-table">
 
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th class="wide-col">Username</th>
-                        <th class="wide-col">Hostname</th>
-                        <th class="wide-col">UID</th>
-                        <th class="wide-col">OS Name</th>
-                        <th class="wide-col">OS Version</th>
-                        <th class="wide-col">OS Architecture</th>
-                        <th class="wide-col">Email</th>
-                        <th class="wide-col">Private Key</th>
-                        <th class="wide-col">Crypto Address</th>
-                        <th class="wide-col">Total Payment</th>
-                        <th class="wide-col">Status</th>
-                        <th class="wide-col">Amount Paid</th>
-                        <th class="wide-col">Creation Date</th>
-                        <th class="wide-col">Payment Date</th>
-                    </tr>
+                <tr>
+                    <th>ID</th>
+                    <th class="wide-col">Username</th>
+                    <th class="wide-col">Hostname</th>
+                    <th class="wide-col">UID</th>
+                    <th class="wide-col">OS Name</th>
+                    <th class="wide-col">OS Version</th>
+                    <th class="wide-col">OS Architecture</th>
+                    <th class="wide-col">Email</th>
+                    <th class="wide-col">Private Key</th>
+                    <th class="wide-col">Crypto Address</th>
+                    <th class="wide-col">Total Payment</th>
+                    <th class="wide-col">Status</th>
+                    <th class="wide-col">Amount Paid</th>
+                    <th class="wide-col">Creation Date</th>
+                    <th class="wide-col">Payment Date</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {% for user_paid in users_paid %}
+                {% for user_paid in users_paid %}
                     <tr>
                         <td class="wide-col">{{ user_paid.id }}</td>
                         <td class="wide-col">{{ user_paid.username }}</td>
@@ -127,12 +130,11 @@ Databases
                         <td class="wide-col">{{ user_paid.creation_date }}</td>
                         <td class="wide-col">{{ user_paid.payment_date }}</td>
                     </tr>
-                    {% endfor %}
+                {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-</div>
     {% block scripts %}
         <script src="{{ url_for('static', filename='tab_search.js') }}"></script>
     {% endblock %}

