@@ -7,7 +7,6 @@ from flask_login import UserMixin
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
-    password = db.Column(db.String(120))
     hostname = db.Column(db.String(120))
     uid = db.Column(db.String(120), unique=True)
     email = db.Column(db.String(120))
@@ -29,7 +28,6 @@ class Users(db.Model):
 class UsersPaid(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120))
-    password = db.Column(db.String(120))
     hostname = db.Column(db.String(120))
     uid = db.Column(db.String(120), unique=True)
     email = db.Column(db.String(120))

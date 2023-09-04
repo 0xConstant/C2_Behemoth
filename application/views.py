@@ -103,36 +103,21 @@ def new_user():
         return jsonify({"error": "An unexpected error occurred"}), 400
 
 
-@app.route("/check-payment", methods=["POST"])
+@app.route("/status/<uid>", methods=["GET", "POST"])
 @csrf.exempt
 @limiter.limit("1000 per 1 hour")
-def check_payment():
+def status(uid):
     try:
-        data = request.json
-        if not data:
-            return jsonify({"error": "No data provided."}), 400
-
-        uid = clean(data.get('uid'))
-        if not uid:
-            return jsonify({"error": "No UID provided."}), 400
-
+        uid = clean('uid')
         paid_user = UsersPaid.query.filter_by(uid=uid).first()
         user = Users.query.filter_by(uid=uid).first()
-
-        # if user and user.status:
-        if paid_user and paid_user.status:
-            return jsonify({
-                "STATUS": "SUCCESS",
-                "PRIVATE_KEY": str(paid_user.private_key)
-            }), 200
-        elif user:
-            return jsonify({"status": "Payment is insufficient.", "amount_paid": str(user.amount_paid)}), 200
-        else:
-            return jsonify({"error": "Payment not yet complete."}), 400
+        if not uid or not paid_user or not user:
+            return jsonify({"error": "Invalid UID or UID doesn't exist."}), 403
 
     except Exception as e:
         print(e)
         return jsonify({"error": "Request failed, try again."}), 400
+    return render_template("status.html")
 
 
 @login_manager.user_loader
