@@ -4,6 +4,7 @@ from utilities.wallet_api import wallet_balance
 from datetime import datetime
 from celery.schedules import crontab
 import pytz
+from utilities.test_wallet import fake_balance
 
 
 tz = pytz.timezone('America/Toronto')
@@ -29,7 +30,7 @@ def check_wallet():
 		users = Users.query.all()
 		for user in users:
 			try:
-				balance = wallet_balance(user.address_index)
+				balance = fake_balance(user.address_index) # wallet_balance(user.address_index)
 				if balance > 0:
 					user.amount_paid = balance
 					if user.amount_paid >= user.total_payment and not user.status:

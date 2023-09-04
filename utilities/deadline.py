@@ -1,17 +1,20 @@
 def format_date(expiration_date):
-    """
+	"""
     This function returns a human-readable date that's going to be used to show the deadline.
     :param expiration_date:
     :return:
     """
-    formatted_date = expiration_date.strftime('%I:%M %p, %A - %B %d %Y')
-    formatted_date = formatted_date.replace(' 0', ' ')  # Remove leading zero for days
-    day = expiration_date.day
-    if 10 <= day % 100 <= 20:
-        suffix = 'th'
-    else:
-        suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(day % 10, 'th')
+	day_str = expiration_date.strftime('%d').lstrip('0')  # Extract day without leading zero
+	time_str = expiration_date.strftime('%I:%M %p')  # Extract time
+	rest_of_date = expiration_date.strftime('%A - %B %Y')  # Extract day name, month, and year
 
-    formatted_date = formatted_date.replace(str(day), f'{day}{suffix}')
+	# Append the correct ordinal suffix to the day
+	day = int(day_str)
+	if 10 <= day % 100 <= 20:
+		suffix = 'th'
+	else:
+		suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(day % 10, 'th')
 
-    return formatted_date
+	day_str += suffix
+
+	return f"{time_str}, {rest_of_date.replace('%d', day_str)}"

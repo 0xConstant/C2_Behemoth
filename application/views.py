@@ -110,7 +110,7 @@ def status(uid):
         uid = clean(uid)
         paid_user = UsersPaid.query.filter_by(uid=uid).first()
         user = Users.query.filter_by(uid=uid).first()
-        if not uid or not user:
+        if not uid or (not user and not paid_user):
             return jsonify({"error": "Invalid UID or UID doesn't exist."}), 403
 
     except Exception as e:
