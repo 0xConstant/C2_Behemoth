@@ -267,7 +267,8 @@ def script_editor():
         flash('Script updated successfully!', 'success')
         return redirect(url_for('script_editor'))
 
-    return render_template("dashboard/script.html", decrypter=decrypter, active_page='script_editor')
+    return render_template("dashboard/script.html", decrypter=decrypter,
+                           active_page='script_editor', date=format_date)
 
 
 

@@ -44,7 +44,7 @@
                       rows="10">{{ decrypter.content if decrypter else '' }}</textarea>
         </div>
         {% if decrypter and decrypter.creation %}
-            <p>Last Modified: {{ decrypter.creation.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p>Last Modified: {{ date(decrypter.creation) }}</p>
         {% endif %}
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
