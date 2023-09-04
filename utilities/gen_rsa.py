@@ -42,21 +42,6 @@ def to_base64(input_data):
     return base64.b64encode(input_data).decode('utf-8')
 
 
-def pub_to_xml(public_key_pem):
-    """
-    This function converts a public key from PEM format to XML format which works well with .NET
-    :param public_key_pem:
-    :return:
-    """
-    publicKey = RSA.import_key(public_key_pem)
-    xml_format = '''<RSAKeyValue><Modulus>{modulus}</Modulus><Exponent>{exponent}</Exponent></RSAKeyValue>'''
-
-    return xml_format.format(
-        modulus=to_base64(number.long_to_bytes(publicKey.n)),
-        exponent=to_base64(number.long_to_bytes(publicKey.e))
-    )
-
-
 def priv_key_to_xml(private_key_pem):
     """
     This function converts a private key from PEM format to XML format which works well with .NET
@@ -95,6 +80,13 @@ def gen_keys():
     """
     private_key_pem, public_key_pem = generate_rsa_keys()
     user_priv_key = priv_key_to_xml(private_key_pem)
-    user_pub_key = pub_to_xml(public_key_pem)
+    public_key_der = public_key_pem.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "").replace("\n", "")
+    user_pub_key = to_base64(base64.b64decode(public_key_der))
+
     return user_priv_key, user_pub_key
+
+
+
+
+
 

