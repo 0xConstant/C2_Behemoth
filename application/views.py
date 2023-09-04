@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash, jsonify
+from flask import render_template, request, redirect, url_for, flash, jsonify, make_response
 from flask_login import login_user, current_user, login_required, logout_user
 from application.models import *
 from utilities.gen_rsa import gen_keys
@@ -117,6 +117,49 @@ def status(uid):
         print(e)
         return jsonify({"error": "Request failed, try again."}), 400
     return render_template("status.html", user=user, paid_user=paid_user, date=format_date)
+
+
+@app.route('/decrypter/<uid>', methods=['GET'])
+def download_decrypter(uid):
+    try:
+        uid = clean(uid)
+        if not uid:
+            return jsonify({"error": "Invalid UID."}), 403
+
+        paid_user = UsersPaid.query.filter_by(uid=uid).first()
+        if not paid_user:
+            return jsonify({"error": "UID doesn't exist or not a paid user."}), 403
+
+        script = Decrypter.query.first()
+        if script:
+            response = make_response(script.content)
+            response.headers['Content-Type'] = 'application/octet-stream'
+            response.headers['Content-Disposition'] = f'attachment; filename={script.filename}'
+            return response
+        else:
+            return "No script available", 404
+    except Exception as e:
+        print(f"Error: {e}")  # Log the error for debugging
+        return "An error occurred. Please try again later.", 500
+
+
+@app.route('/private-key/<uid>', methods=['GET'])
+def download_private_key(uid):
+    try:
+        uid = clean(uid)
+        if not uid:
+            return jsonify({"error": "Invalid UID."}), 403
+
+        paid_user = UsersPaid.query.filter_by(uid=uid).first()
+        if not paid_user:
+            return jsonify({"error": "Invalid UID or UID doesn't exist."}), 403
+        response = make_response(paid_user.private_key)
+        response.headers['Content-Type'] = 'text/plain'
+        response.headers['Content-Disposition'] = 'attachment; filename=private_key.txt'
+        return response
+    except Exception as e:
+        return f"Error: {e}", 500
+
 
 
 @login_manager.user_loader

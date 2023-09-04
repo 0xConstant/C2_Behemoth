@@ -117,8 +117,8 @@
         <hr>
         <footer>
             {% if paid_user %}
-                <button type="button" class="btn btn-primary">Decrypter</button>
-                <button type="button" class="btn btn-secondary">Private Key</button>
+                <a href="{{ url_for('download_decrypter', uid=paid_user.uid) }}" class="btn btn-primary">Download decrypter</a>
+                <a href="{{ url_for('download_private_key', uid=paid_user.uid) }}" class="btn btn-secondary">Private Key</a>
             {% endif %}
         </footer>
     </div>

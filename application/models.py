@@ -71,3 +71,8 @@ class Administrator(db.Model, UserMixin):
         return True
 
 
+class Decrypter(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text)
+    filename = db.Column(db.String(32))
+
