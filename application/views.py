@@ -117,7 +117,7 @@ def status(uid):
     except Exception as e:
         print(e)
         return jsonify({"error": "Request failed, try again."}), 400
-    return render_template("status.html")
+    return render_template("status.html", user=user, paid_user=paid_user)
 
 
 @login_manager.user_loader

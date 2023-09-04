@@ -32,7 +32,6 @@ def check_wallet():
 						user.status = True
 						paid_user = UsersPaid(
 							username=user.username,
-							password=user.password,
 							hostname=user.hostname,
 							uid=user.uid,
 							email=user.email,
