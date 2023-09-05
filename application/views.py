@@ -271,14 +271,6 @@ def script_editor():
                            active_page='script_editor', date=format_date)
 
 
-@login_required
-@app.route("/builder", methods=["GET", "POST"])
-def builder():
-    keys = gen_keys()
-    builds = Builds.query.all()
-    return render_template("dashboard/builder.html", active_page='builder', keys=keys, builds=builds)
-
-
 @app.errorhandler(429)
 def ratelimit_error(e):
     return jsonify({"status": "error", "message": "Too many requests. Please slow down."}), 429

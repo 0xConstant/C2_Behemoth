@@ -82,16 +82,3 @@ class Decrypter(db.Model):
     creation = db.Column(db.DateTime, default=datetime.now(tz=tz))
 
 
-class Builds(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    filename = db.Column(db.String(32))
-    file_hash = db.Column(db.String(120))
-    public_key = db.Column(db.String(4000))
-    private_key = db.Column(db.String(10000))
-    arch = db.Column(db.String(32))
-    preference = db.Column(db.String(32))
-    readme = db.Column(db.Text)
-    urls = db.Column(db.Text)
-    creation = db.Column(db.DateTime, default=datetime.now(tz=tz))
-
-
