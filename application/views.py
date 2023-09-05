@@ -275,7 +275,8 @@ def script_editor():
 @app.route("/builder", methods=["GET", "POST"])
 def builder():
     keys = gen_keys()
-    return render_template("dashboard/builder.html", active_page='builder', keys=keys)
+    builds = Builds.query.all()
+    return render_template("dashboard/builder.html", active_page='builder', keys=keys, builds=builds)
 
 
 @app.errorhandler(429)
