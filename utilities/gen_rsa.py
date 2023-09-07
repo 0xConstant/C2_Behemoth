@@ -85,5 +85,3 @@ def gen_keys():
 
     return user_priv_key, user_pub_key
 
-
-

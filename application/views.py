@@ -12,7 +12,6 @@ from datetime import timedelta
 from utilities.wallet_api import gen_wallet
 from utilities.deadline import format_date
 from utilities.instructions import instruct
-from utilities.random_str import secure_string
 
 
 @app.route("/new-user", methods=["POST"])
@@ -26,6 +25,7 @@ def new_user():
 
         geolocation = user_geolocation(user_ip)
         data = request.json
+
         if not data:
             return jsonify({"error": "No data provided."}), 400
 
@@ -47,7 +47,6 @@ def new_user():
             payment = 50
 
         wallet = gen_wallet(sanitized_data.get("uid"))
-        password = secure_string(32)
 
         user = Users(
             username=sanitized_data.get("username"),
