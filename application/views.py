@@ -144,9 +144,8 @@ def download_decrypter(uid):
             return response
         else:
             return "No script available", 404
-    except Exception as e:
-        print(f"Error: {e}")  # Log the error for debugging
-        return "An error occurred. Please try again later.", 500
+    except:
+        return jsonify({"error": "An error occurred. Please try again later."}), 500
 
 
 @app.route('/private-key/<uid>', methods=['GET'])
@@ -164,8 +163,8 @@ def download_private_key(uid):
         response.headers['Content-Type'] = 'text/plain'
         response.headers['Content-Disposition'] = 'attachment; filename=private_key.txt'
         return response
-    except Exception as e:
-        return f"Error: {e}", 500
+    except:
+        return jsonify({"error": "An error occurred. Please try again later."}), 500
 
 
 
@@ -175,6 +174,7 @@ def load_user(user_id):
 
 
 @app.route("/login", methods=["GET", "POST"])
+@limiter.limit("5 per 1 hour")
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))

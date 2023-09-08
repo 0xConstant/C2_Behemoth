@@ -34,7 +34,8 @@
     {% if user %}
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                var duration = {{ remaining_time }};  // directly use the server-calculated duration
+                // directly use the server's calculated duration
+                var duration = {{ remaining_time }};
 
                 var hoursDisplay = document.querySelector('#hours');
                 var minutesDisplay = document.querySelector('#minutes');
