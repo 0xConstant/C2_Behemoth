@@ -200,8 +200,8 @@ def logout():
     return redirect(url_for('login'))
 
 
-@login_required
 @app.route("/dashboard", methods=["GET"])
+@login_required
 def dashboard():
     users_data = UsersData.query.all()
     max_files = max((user.files for user in users_data if user.files is not None), default=0)
@@ -216,8 +216,8 @@ def dashboard():
     )
 
 
-@login_required
 @app.route("/databases", methods=["GET", "POST"])
+@login_required
 def databases():
     users = Users.query.all()
     users_paid = UsersPaid.query.all()
@@ -248,8 +248,8 @@ def databases():
     )
 
 
-@login_required
 @app.route("/script_editor", methods=["GET", "POST"])
+@login_required
 def script_editor():
     decrypter = Decrypter.query.first()  # Fetch the first record
 

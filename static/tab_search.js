@@ -1,7 +1,7 @@
 
     $(document).ready(function(){
 
-    // For the first table
+    // For the first table (users table)
     $("#search-input").on("keyup", function() {
         var value = $(this).val().toLowerCase();
 
@@ -10,7 +10,7 @@
         });
     });
 
-    // For the second table
+    // For the second table (paid users table)
     $("#search-paid-input").on("keyup", function() {
         var value = $(this).val().toLowerCase();
 
