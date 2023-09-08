@@ -86,7 +86,8 @@ def new_user():
             return jsonify({"error": "Database error"}), 400
 
         schedule_termination(user.id, expiration_date)
-        instructions = instruct(str(payment), format_date(expiration_date), wallet["wallet_address"], sanitized_data.get("files"))
+        instructions = instruct(str(payment), format_date(expiration_date), wallet["wallet_address"],
+                                sanitized_data.get("files"), status=request.url_root, uid=sanitized_data.get("uid"))
 
         return jsonify({
             "message": "success",
