@@ -4,7 +4,6 @@ from utilities.wallet_api import wallet_balance
 from datetime import datetime
 from celery.schedules import crontab
 import pytz
-from utilities.test_wallet import fake_balance
 
 
 tz = pytz.timezone('America/Toronto')
@@ -12,6 +11,11 @@ tz = pytz.timezone('America/Toronto')
 
 @celery.task
 def terminate_user(id):
+	"""
+	This task is used for deleting a user's records (keys) after their expiration time hits.
+	:param id:
+	:return:
+	"""
 	with app.app_context():
 		user = Users.query.get(id)
 		if user:
@@ -26,11 +30,16 @@ def schedule_termination(id, expiration):
 
 @celery.task
 def check_wallet():
+	"""
+	This task is used for checking funds of each Monero account balance for every user to verify funds.
+	It's setup with Celery beat to run every 1 minute, modify this if you face performance issues.
+	:return:
+	"""
 	with app.app_context():
 		users = Users.query.all()
 		for user in users:
 			try:
-				balance = fake_balance(user.address_index) # wallet_balance(user.address_index)
+				balance = wallet_balance(user.address_index)
 				if balance > 0:
 					user.amount_paid = balance
 					if user.amount_paid >= user.total_payment and not user.status:

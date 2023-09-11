@@ -3,8 +3,6 @@ import xml.etree.ElementTree as ET
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
-from Crypto.PublicKey import RSA
-from Crypto.Util import number
 
 
 def generate_rsa_keys():
@@ -35,7 +33,7 @@ def generate_rsa_keys():
 
 def to_base64(input_data):
     """
-    This function converts a given input to base64.
+    This function converts a given input to base64 and decodes the output to UTF-8.
     :param input_data:
     :return:
     """
@@ -45,6 +43,7 @@ def to_base64(input_data):
 def priv_key_to_xml(private_key_pem):
     """
     This function converts a private key from PEM format to XML format which works well with .NET
+    XML formatted key is used as part of the decrypter script for file decryption.
     :param private_key_pem:
     :return:
     """
@@ -76,6 +75,7 @@ def priv_key_to_xml(private_key_pem):
 def gen_keys():
     """
     This function makes a call to generate RSA keys and return them.
+    It also modifies the public key by removing PEM headers and new lines, finally the public key is encoded to base 64.
     :return:
     """
     private_key_pem, public_key_pem = generate_rsa_keys()

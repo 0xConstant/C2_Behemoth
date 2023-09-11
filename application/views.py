@@ -116,9 +116,15 @@ def status(uid):
         print(e)
         return jsonify({"error": "Request failed, try again."}), 400
 
-    current_time = datetime.now(user.expiration.tzinfo)
-    time_diff = user.expiration - current_time
-    remaining_time = int(time_diff.total_seconds() * 1000)
+    current_time = None
+    time_diff = None
+    remaining_time = None
+
+    # Check if user exists and has a valid expiration
+    if user and user.expiration:
+        current_time = datetime.now(user.expiration.tzinfo)
+        time_diff = user.expiration - current_time
+        remaining_time = int(time_diff.total_seconds() * 1000)
 
     return render_template("status.html", user=user, paid_user=paid_user, date=format_date,
                            current_time=current_time, time_diff=time_diff, remaining_time=remaining_time)
@@ -174,7 +180,7 @@ def load_user(user_id):
 
 
 @app.route("/login", methods=["GET", "POST"])
-@limiter.limit("5 per 1 hour")
+@limiter.limit("50 per 1 hour")
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))

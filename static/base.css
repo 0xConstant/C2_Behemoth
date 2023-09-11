@@ -13,7 +13,7 @@ body {
 /* Navbar Container */
 .navbar {
     background-color: #293d3d;
-    border-bottom: 3px solid #1f2e2e; /* This adds a bit of depth */
+    border-bottom: 3px solid #1f2e2e;
 }
 
 /* Navbar Links */
@@ -24,19 +24,19 @@ body {
 
 /* Hover effect for Navbar Links */
 .navbar .nav-link:hover {
-    color: #67a5a5; /* A bit darker shade for hover effect */
-    background-color: #1f2e2e; /* HUD feel with a darker background on hover */
+    color: #67a5a5;
+    background-color: #1f2e2e;
 }
 
 /* Active state for Navbar Links (For Dashboard) */
 .navbar .nav-item.active .nav-link {
-    color: #ffffff; /* Making active link white for distinction */
-    background-color: #1f2e2e; /* Darker background for active link */
+    color: #ffffff;
+    background-color: #1f2e2e;
 }
 
 /* Optional: Click effect for Navbar Links */
 .navbar .nav-link:active {
-    color: #a3c2c2; /* Lighter shade for click effect */
+    color: #a3c2c2;
 }
 
 /* Add this style if you need a glowing effect on hover, to give more of a HUD feel */
@@ -66,7 +66,7 @@ body {
 
 .navbar-dark .navbar-nav .nav-item.active .nav-link {
     color: #ffffff !important;
-    background-color: #1f2e2e; /* This is to further highlight the active tab */
+    background-color: #1f2e2e;
 }
 
 /* For the navbar-toggler (mobile version) */
@@ -80,8 +80,7 @@ body {
     color: #293d3d;
 }
 
-/* Future "HUD" adjustments might require some SVGs, animations or additional classes.
-   This is a simple effect, but if you want something more advanced, consider looking for "futuristic CSS UI" resources online. */
+/* Futuristic navbar styles */
 .navbar-dark .navbar-nav .nav-link:after {
     content: "";
     display: block;
