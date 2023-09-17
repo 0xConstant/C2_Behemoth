@@ -88,6 +88,6 @@ celery.conf.beat_schedule = {
 celery.conf.beat_schedule = {
     'increase-payment': {
         'task': 'application.tasks.update_payments',
-        'schedule': crontab(minute='*/1'),
+        'schedule': crontab(minute='*/120'),
     },
 }
