@@ -12,6 +12,3 @@ def pic_id(length):
 			generated_strings.add(result)
 			return result
 
-
-# Example usage:
-print(pic_id(3))
