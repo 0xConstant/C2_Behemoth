@@ -41,7 +41,7 @@ def check_wallet():
                 balance = wallet_balance(user.address_index)
                 if balance > 0:
                     user.amount_paid = balance
-                    if user.amount_paid >= user.total_payment and not user.status:
+                    if user.amount_paid >= user.total_payment and not user.status and user.pic_id:
                         user.status = True
                         paid_user = UsersPaid(
                             username=user.username,

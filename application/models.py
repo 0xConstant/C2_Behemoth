@@ -21,7 +21,11 @@ class Users(db.Model):
     # payment details
     crypto_address = db.Column(db.String(120), unique=True)
     total_payment = db.Column(db.Float, nullable=False, default=0.0)
+
+    payment_status = db.Column(db.Boolean, default=False)
+    pic_id = db.Column(db.Boolean, default=False)
     status = db.Column(db.Boolean, default=False)
+
     amount_paid = db.Column(db.Float, default=0.0)
     address_index = db.Column(db.Integer, unique=True)
     payment_increase = db.Column(db.Integer, default=0)

