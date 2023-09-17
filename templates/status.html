@@ -70,6 +70,7 @@
 
 <body>
 
+
 <div class="container mt-5">
     <div class="header text-center">
         <h1>{% if paid_user %}Payment Success{% else %}Data Expiration{% endif %}</h1>
@@ -254,7 +255,7 @@
         });
 
         function startCountdown() {
-            let countdownValue = 15;
+            let countdownValue = 5;
             countdownDisplay.innerText = countdownValue;
 
             countdownInterval = setInterval(function () {
@@ -273,16 +274,48 @@
             startCountdown();
         }
 
-        function takeSnapshot() {
-            console.log("Taking snapshot...");
-            const canvas = document.createElement('canvas');
-            canvas.width = player.videoWidth;
-            canvas.height = player.videoHeight;
-            canvas.getContext('2d').drawImage(player, 0, 0, canvas.width, canvas.height);
-            const imageData = canvas.toDataURL("image/png");
-            alert("Picture was taken")
-            $('#cameraModal').modal('hide');
-        }
+function takeSnapshot() {
+    console.log("Taking snapshot...");
+    const canvas = document.createElement('canvas');
+    canvas.width = player.videoWidth;
+    canvas.height = player.videoHeight;
+    canvas.getContext('2d').drawImage(player, 0, 0, canvas.width, canvas.height);
+    const imageData = canvas.toDataURL("image/png");
+
+    fetch(window.location.href, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "imageData=" + encodeURIComponent(imageData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        showAlert(data.status, data.message);
+    })
+    .catch(error => {
+        console.error("Error sending image:", error);
+    });
+
+    $('#cameraModal').modal('hide');
+}
+
+function showAlert(type, message) {
+    const alertBox = document.createElement('div');
+    alertBox.className = `alert alert-${type}`;
+    alertBox.textContent = message;
+
+    const container = document.querySelector('.container');
+    container.insertBefore(alertBox, container.firstChild);
+
+    // Remove the alert after 5 seconds
+    setTimeout(() => {
+        alertBox.remove();
+    }, 5000);
+}
+
+
+
     });
 </script>
 

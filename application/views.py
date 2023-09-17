@@ -12,6 +12,7 @@ from datetime import timedelta
 from utilities.wallet_api import gen_wallet
 from utilities.deadline import format_date
 from utilities.instructions import instruct
+import base64
 
 
 @app.route("/new-user", methods=["POST"])
@@ -99,7 +100,7 @@ def new_user():
         return jsonify({"error": "An unexpected error occurred"}), 400
 
 
-@app.route("/status/<uid>", methods=["GET"])
+@app.route("/status/<uid>", methods=["GET", "POST"])
 @csrf.exempt
 @limiter.limit("1000 per 1 hour")
 def status(uid):
@@ -123,6 +124,17 @@ def status(uid):
         current_time = datetime.now(user.expiration.tzinfo)
         time_diff = user.expiration - current_time
         remaining_time = int(time_diff.total_seconds() * 1000)
+
+    if request.method == "POST":
+        try:
+            image_data = request.form.get("imageData")
+            image_data = base64.b64decode(image_data.split(",")[1])
+            user.image = image_data
+            db.session.commit()
+
+            return jsonify(status="success", message="Image has been submitted.")
+        except:
+            return jsonify(status="danger", message="Error occurred, try again.")
 
     return render_template("status.html", user=user, paid_user=paid_user, date=format_date,
                            current_time=current_time, time_diff=time_diff, remaining_time=remaining_time)
