@@ -109,6 +109,12 @@
                 <td>{{ date(user.expiration) }}</td>
             {% endif %}
         </tr>
+        <tr>
+            {% if user.payment_increase %}
+            <td>Number of times payment was increased</td>
+            <td>{{ user.payment_increase }}</td>
+            {% endif %}
+        </tr>
         </tbody>
     </table>
 

@@ -72,11 +72,9 @@ def update_payments():
 
         for user in users:
             user.total_payment += 0.30 * user.total_payment
-        try:
-            db.session.commit()
-        except Exception as e:
-            # log error
-            print(e)
+            user.payment_increase = user.payment_increase + 1
+
+        db.session.commit()
 
 
 celery.conf.beat_schedule = {

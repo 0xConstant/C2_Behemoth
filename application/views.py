@@ -58,8 +58,6 @@ def new_user():
             private_key=keys[0],
             crypto_address=wallet["wallet_address"],
             total_payment=payment,
-            status=False,
-            amount_paid=0,
             address_index=wallet["address_index"],
             creation_date=datetime.now(tz=tz),
             expiration=expiration_date

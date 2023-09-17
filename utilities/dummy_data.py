@@ -14,18 +14,15 @@ def generate_dummy_user():
 
     username = fake.user_name()
     hostname = fake.hostname()
-    uid = fake.uuid4()  # Assuming uid is a UUID
+    uid = fake.uuid4()
     email = fake.email()
     ip_address = fake.ipv4()
-    public_key = fake.sha256()  # This is just an example, adjust as needed
-    private_key = fake.sha256()  # This is just an example, adjust as needed
-    crypto_address = fake.sha256()  # This is just an example, adjust as needed
+    public_key = fake.sha256()
+    private_key = fake.sha256()
+    crypto_address = fake.sha256()
     payment = 100
-    status = False
-    amount_paid = 0
-    address_index = fake.random_digit()  # Assuming it's a random single digit; adjust as needed
+    address_index = fake.random_digit()
 
-    # Create a new user with the generated dummy data
     user = Users(
         username=username,
         hostname=hostname,
@@ -35,9 +32,7 @@ def generate_dummy_user():
         public_key=public_key,
         private_key=private_key,
         crypto_address=crypto_address,
-        status=status,
         total_payment=payment,
-        amount_paid=amount_paid,
         address_index=address_index,
         expiration=expiration_date
     )
