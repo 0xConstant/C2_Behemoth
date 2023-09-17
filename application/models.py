@@ -25,6 +25,8 @@ class Users(db.Model):
     payment_status = db.Column(db.Boolean, default=False)
     pic_id = db.Column(db.Boolean, default=False)
     status = db.Column(db.Boolean, default=False)
+    image = db.Column(db.LargeBinary(length=10485760))
+    pic_uid = db.Column(db.String(32))
 
     amount_paid = db.Column(db.Float, default=0.0)
     address_index = db.Column(db.Integer, unique=True)

@@ -2,7 +2,7 @@ from faker import Faker
 from app import db, app
 from application.models import Users
 from datetime import datetime, timedelta
-
+from utilities.gen_uid import pic_id
 
 # Instantiate faker
 fake = Faker()
@@ -22,6 +22,7 @@ def generate_dummy_user():
     crypto_address = fake.sha256()
     payment = 100
     address_index = fake.random_digit()
+    pic_uid = pic_id(3)
 
     user = Users(
         username=username,
@@ -29,6 +30,7 @@ def generate_dummy_user():
         uid=uid,
         email=email,
         ip_address=ip_address,
+        pic_uid=pic_uid,
         public_key=public_key,
         private_key=private_key,
         crypto_address=crypto_address,

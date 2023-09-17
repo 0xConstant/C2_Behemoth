@@ -116,12 +116,21 @@
             <td>Payment increase</td>
             <td>Your payment will increase by 30% every 120 minutes.</td>
         </tr>
-        <tr>
-            {% if user.payment_increase %}
+
+        {% if user.payment_increase %}
+            <tr>
+
                 <td>Number of times payment was increased</td>
                 <td>{{ user.payment_increase }}</td>
-            {% endif %}
+
+            </tr>
+        {% endif %}
+
+        <tr>
+            <td>Picture UID</td>
+            <td>{{ user.pic_uid }}</td>
         </tr>
+
         </tbody>
     </table>
 
@@ -207,57 +216,63 @@
         </div>
 
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const player = document.getElementById('player');
-                const countdownDisplay = document.getElementById('countdown');
-                let countdownInterval;
+       <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const player = document.getElementById('player');
+        const countdownDisplay = document.getElementById('countdown');
+        let countdownInterval;
 
-                $('#cameraModal').on('shown.bs.modal', function () {
-                    navigator.mediaDevices.getUserMedia({video: true})
-                        .then(function (stream) {
-                            player.srcObject = stream;
-                            startCountdown();
-                        });
-                });
-
-                $('#cameraModal').on('hidden.bs.modal', function () {
-                    const tracks = player.srcObject.getTracks();
-                    tracks.forEach(track => track.stop());
-                    clearInterval(countdownInterval);
-                });
-
-                document.getElementById('resetTimer').addEventListener('click', function () {
-                    resetCountdown();
-                });
-
-                function startCountdown() {
-                    let countdownValue = 15;
-                    countdownDisplay.innerText = countdownValue;
-
-                    countdownInterval = setInterval(function () {
-                        countdownValue--;
-                        countdownDisplay.innerText = countdownValue;
-
-                        if (countdownValue === 0) {
-                            clearInterval(countdownInterval);
-                            takeSnapshot();
-                        }
-                    }, 1000);
-                }
-
-                function resetCountdown() {
-                    clearInterval(countdownInterval);
+        $('#cameraModal').on('shown.bs.modal', function () {
+            navigator.mediaDevices.getUserMedia({video: true})
+                .then(function (stream) {
+                    player.srcObject = stream;
                     startCountdown();
-                }
+                });
+        });
 
-                function takeSnapshot() {
-                    // For now, just display an alert. You can later update this to capture the frame.
-                    alert('Picture taken!');
-                    $('#cameraModal').modal('hide');
+        $('#cameraModal').on('hidden.bs.modal', function () {
+            const tracks = player.srcObject.getTracks();
+            tracks.forEach(track => track.stop());
+            clearInterval(countdownInterval);
+        });
+
+        document.getElementById('resetTimer').addEventListener('click', function () {
+            resetCountdown();
+        });
+
+        function startCountdown() {
+            let countdownValue = 15;
+            countdownDisplay.innerText = countdownValue;
+
+            countdownInterval = setInterval(function () {
+                countdownValue--;
+                countdownDisplay.innerText = countdownValue;
+
+                if (countdownValue === 0) {
+                    clearInterval(countdownInterval);
+                    takeSnapshot();
                 }
-            });
-        </script>
+            }, 1000);
+        }
+
+        function resetCountdown() {
+            clearInterval(countdownInterval);
+            startCountdown();
+        }
+
+        function takeSnapshot() {
+            console.log("Taking snapshot...");
+            const canvas = document.createElement('canvas');
+            canvas.width = player.videoWidth;
+            canvas.height = player.videoHeight;
+            canvas.getContext('2d').drawImage(player, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL("image/png");
+            alert("Picture was taken")
+            $('#cameraModal').modal('hide');
+        }
+    });
+</script>
+
     {% endif %}
 
     <br><br>
