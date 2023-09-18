@@ -1,0 +1,134 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}
+    Pictures
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='databases.css') }}">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .modal-body {
+            padding: 0 !important;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h1 class="my-4">Pictures awaiting approval</h1>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="filterRadio" id="showSubmitted" value="submitted" checked>
+        <label class="form-check-label" for="showSubmitted">Show Submitted</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="filterRadio" id="showApproved" value="approved">
+        <label class="form-check-label" for="showApproved">Show Approved</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="filterRadio" id="showRejected" value="rejected">
+        <label class="form-check-label" for="showRejected">Show Rejected</label>
+    </div>
+
+    <table class="table table-responsive table-striped mt-3" id="users-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th class="wide-col">UID</th>
+            <th class="wide-col">Total Payment</th>
+            <th class="wide-col">Status</th>
+            <th class="wide-col">Amount Paid</th>
+            <th class="wide-col">Picture</th>
+            <th class="wide-col">Action</th>
+            <th class="wide-col">Creation Date</th>
+            <th class="wide-col">Expiration Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users_data %}
+            {% set row_status = 'none' %}
+            {% if user.pic_submit and not user.pic_id and not user.pic_rejected %}
+                {% set row_status = 'submitted' %}
+            {% elif user.pic_id %}
+                {% set row_status = 'approved' %}
+            {% elif user.pic_rejected %}
+                {% set row_status = 'rejected' %}
+            {% endif %}
+            <tr data-status="{{ row_status }}">
+                <td class="wide-col">{{ user.id }}</td>
+                <td class="wide-col uid-cell">{{ user.uid }}</td>
+                <td class="wide-col">{{ user.total_payment }}</td>
+                <td class="wide-col">{{ user.status }}</td>
+                <td class="wide-col">{{ user.amount_paid }}</td>
+                <td class="wide-col">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal{{ loop.index }}">
+                        View Image
+                    </button>
+                    <!-- The Modal -->
+                    <div class="modal fade" id="imageModal{{ loop.index }}">
+                        <div class="modal-dialog modal-xl modal-dialog-centered"> <!-- Added the modal-dialog-centered class -->
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">View Image</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    <img src="data:image/png;base64,{{ user.image|b64encode }}" class="img-fluid w-100 h-100" alt="Pussy Image">
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </td>
+
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Action
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#action1">Approve</a>
+                            <a class="dropdown-item" href="#action2">Reject</a>
+                        </div>
+                    </div>
+                </td>
+                <td class="wide-col">{{ user.creation_date }}</td>
+                <td class="wide-col">{{ user.expiration }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    {% block scripts %}
+        <script>
+            $('input[name="filterRadio"]').on('change', function () {
+                // Get the value of the selected radio button
+                let selectedStatus = $(this).val();
+
+                // First, hide all rows
+                $('#users-table tbody tr').hide();
+
+                // Now, only show rows that match the selected status
+                $('#users-table tbody tr[data-status="' + selectedStatus + '"]').show();
+            });
+
+            // Trigger the change event on page load to apply the default filter
+            $('input[name="filterRadio"]:checked').trigger('change');
+        </script>
+    {% endblock %}
+
+{% endblock %}
+
+

@@ -296,7 +296,18 @@ def script_editor():
                            active_page='script_editor', date=format_date)
 
 
+@app.route("/pictures", methods=["GET", "POST"])
+@login_required
+def pictures():
+    users_data = Users.query.all()
+    return render_template("dashboard/pictures.html", active_page='pictures', users_data=users_data)
+
+
 @app.errorhandler(429)
 def ratelimit_error(e):
     return jsonify({"status": "error", "message": "Too many requests. Please slow down."}), 429
 
+
+@app.template_filter('b64encode')
+def b64encode_filter(data):
+    return base64.b64encode(data).decode('utf-8')
