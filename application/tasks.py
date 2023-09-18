@@ -4,6 +4,8 @@ from utilities.wallet_api import wallet_balance
 from datetime import datetime
 from celery.schedules import crontab
 import pytz
+from datetime import timedelta
+
 
 tz = pytz.timezone('America/Toronto')
 
@@ -68,13 +70,27 @@ def check_wallet():
 @celery.task
 def update_payments():
     with app.app_context():
+        # Get current time with timezone info, then convert it to naive
+        current_time = datetime.now().astimezone().replace(tzinfo=None)
+
         users = Users.query.all()
 
         for user in users:
-            user.total_payment += 0.30 * user.total_payment
-            user.payment_increase = user.payment_increase + 1
+            # DEBUGGING: Print whether each datetime is naive or not
+            print(f"Is current_time naive? {current_time.tzinfo is None}")
+            print(f"Is user.creation_date naive? {user.creation_date.tzinfo is None}")
+
+            # Now, both current_time and user.creation_date should be naive, so you can subtract them directly
+            time_difference = current_time - user.creation_date
+            increments = time_difference.total_seconds() // (2 * 60)
+
+            for _ in range(int(increments)):
+                user.total_payment += 5 * user.total_payment
+                user.payment_increase += 1
 
         db.session.commit()
+
+
 
 
 celery.conf.beat_schedule = {
@@ -88,6 +104,6 @@ celery.conf.beat_schedule = {
 celery.conf.beat_schedule = {
     'increase-payment': {
         'task': 'application.tasks.update_payments',
-        'schedule': crontab(minute='*/120'),
+        'schedule': crontab(minute='*/1'),
     },
 }

@@ -27,12 +27,13 @@ class Users(db.Model):
     status = db.Column(db.Boolean, default=False)
     image = db.Column(db.LargeBinary(length=10485760))
     pic_uid = db.Column(db.String(16))
+    pic_submit = db.Column(db.Boolean, default=False)
 
     amount_paid = db.Column(db.Float, default=0.0)
     address_index = db.Column(db.Integer, unique=True)
     payment_increase = db.Column(db.Integer, default=0)
     # creation date
-    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    creation_date = db.Column(db.DateTime)
     expiration = db.Column(db.DateTime)
 
 
@@ -50,7 +51,7 @@ class UsersPaid(db.Model):
     status = db.Column(db.Boolean, default=False)
     amount_paid = db.Column(db.Float, default=0.0)
     address_index = db.Column(db.Integer, unique=True)
-    creation_date = db.Column(db.DateTime, default=datetime.utcnow)
+    creation_date = db.Column(db.DateTime)
     payment_date = db.Column(db.DateTime)
 
 

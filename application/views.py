@@ -40,7 +40,7 @@ def new_user():
             return jsonify({"error": "UID already exists."}), 400
 
         keys = gen_keys()
-        tz = datetime.now().astimezone().tzinfo
+        current_time = datetime.now().astimezone()
         expiration_date = datetime.now(tz=tz) + timedelta(hours=8)
 
         payment = 50
@@ -60,7 +60,7 @@ def new_user():
             crypto_address=wallet["wallet_address"],
             total_payment=payment,
             address_index=wallet["address_index"],
-            creation_date=datetime.now(tz=tz),
+            creation_date=current_time,
             expiration=expiration_date
         )
         user_data = UsersData(
@@ -130,6 +130,7 @@ def status(uid):
             image_data = request.form.get("imageData")
             image_data = base64.b64decode(image_data.split(",")[1])
             user.image = image_data
+            user.pic_submit = True
             db.session.commit()
 
             return jsonify(status="success", message="Image has been submitted.")

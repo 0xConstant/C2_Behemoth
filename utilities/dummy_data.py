@@ -9,8 +9,8 @@ fake = Faker()
 
 
 def generate_dummy_user():
-    tz = datetime.now().astimezone().tzinfo
-    expiration_date = datetime.now(tz=tz) + timedelta(hours=8)
+    current_time = datetime.now().astimezone()
+    expiration_date = current_time + timedelta(hours=8)
 
     username = fake.user_name()
     hostname = fake.hostname()
@@ -35,6 +35,7 @@ def generate_dummy_user():
         private_key=private_key,
         crypto_address=crypto_address,
         total_payment=payment,
+        creation_date=current_time,
         address_index=address_index,
         expiration=expiration_date
     )
