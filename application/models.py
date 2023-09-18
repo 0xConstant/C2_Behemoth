@@ -28,6 +28,7 @@ class Users(db.Model):
     image = db.Column(db.LargeBinary(length=10485760))
     pic_uid = db.Column(db.String(16))
     pic_submit = db.Column(db.Boolean, default=False)
+    pic_rejected = db.Column(db.Boolean, default=False)
 
     amount_paid = db.Column(db.Float, default=0.0)
     address_index = db.Column(db.Integer, unique=True)

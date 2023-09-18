@@ -115,7 +115,7 @@
         </tr>
         <tr>
             <td>Payment increase</td>
-            <td>Your payment will increase by 5% every 120 minutes.</td>
+            <td>Your payment will increase by $30 every 120 minutes.</td>
         </tr>
 
         {% if user.payment_increase %}
@@ -134,16 +134,19 @@
 
         <tr>
             <td>Picture status</td>
-            {% if user.pic_id %}
-            <td>Picture has been submitted and confirmed.</td>
+            <td>
+                {% if user.pic_id %}
+                    Picture has been submitted and approved.
+                {% elif user.pic_rejected %}
+                    <i class="fas fa-exclamation" style="color: red;"></i> Picture was rejected, your ransom has been increased.
+                {% elif user.pic_submit %}
+                    <i class="fas fa-clock" style="color: orange;"></i> Picture has been submitted and is awaiting approval.
+                {% else %}
+                    Picture is not yet submitted.
                 {% endif %}
-            {% if not user.pic_submit %}
-            <td>Picture is not yet submitted.</td>
-                {% endif %}
-            {% if user.pic_submit %}
-                <td><i class="fas fa-clock" style="color: orange;"></i> Picture has been submitted and is awaiting approval.</td>
-            {% endif %}
+            </td>
         </tr>
+
 
         <tr>
             <td>Crypto address</td>
