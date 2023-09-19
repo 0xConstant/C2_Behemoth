@@ -43,7 +43,7 @@ def check_wallet():
                 balance = wallet_balance(user.address_index)
                 if balance > 0:
                     user.amount_paid = balance
-                    if balance >= user.total_payment and user.pic_id:
+                    if user.amount_paid >= user.total_payment and user.pic_id:
                         user.status = True
                         user.payment_date = datetime.now(tz=tz)
             except Exception as e:

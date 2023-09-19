@@ -151,7 +151,7 @@ def download_decrypter(uid):
             return jsonify({"error": "Invalid UID."}), 403
 
         user = Users.query.filter_by(uid=uid).first()
-        if not user:
+        if not user or not user.status:
             return jsonify({"error": "UID doesn't exist or not a paid user."}), 403
 
         script = Decrypter.query.first()
@@ -174,10 +174,10 @@ def download_private_key(uid):
         if not uid:
             return jsonify({"error": "Invalid UID."}), 403
 
-        paid_user = UsersPaid.query.filter_by(uid=uid).first()
-        if not paid_user:
-            return jsonify({"error": "Invalid UID or UID doesn't exist."}), 403
-        response = make_response(paid_user.private_key)
+        user = Users.query.filter_by(uid=uid, status=True).first()
+        if not user:
+            return jsonify({"error": "Invalid UID or payment wasn't made."}), 403
+        response = make_response(user.private_key)
         response.headers['Content-Type'] = 'text/plain'
         response.headers['Content-Disposition'] = 'attachment; filename=private_key.txt'
         return response
@@ -237,22 +237,22 @@ def dashboard():
 @app.route("/databases", methods=["GET", "POST"])
 @login_required
 def databases():
-    users = Users.query.all()
-    users_paid = UsersPaid.query.all()
+    users = Users.query.filter_by(status=False).all()
+    users_paid = Users.query.filter_by(status=True).all()
 
-    # Get counts and latest entry dates for Users table
+    # Get counts and latest entry date for users
     users_count = len(users)
     last_user_date = None
     if users_count > 0:
-        last_user = Users.query.order_by(Users.creation_date.desc()).first()
+        last_user = Users.query.filter_by(status=False).order_by(Users.creation_date.desc()).first()
         last_user_date = last_user.creation_date
 
-    # Get counts and latest entry dates for UsersPaid table
+    # Get counts for users_paid
     users_paid_count = len(users_paid)
     last_user_paid_date = None
     if users_paid_count > 0:
-        last_user_paid = UsersPaid.query.order_by(UsersPaid.payment_date.desc()).first()
-        last_user_paid_date = last_user_paid.payment_date
+        last_user_paid = Users.query.filter_by(status=True).order_by(Users.creation_date.desc()).first()
+        last_user_paid_date = last_user_paid.creation_date
 
     return render_template(
         "dashboard/databases.html",
