@@ -16,27 +16,27 @@ class Users(db.Model):
     email = db.Column(db.String(120))
     ip_address = db.Column(db.String(120))
     # keys
-    public_key = db.Column(db.String(4000))
-    private_key = db.Column(db.String(10000))
+    public_key = db.Column(db.String(4000), nullable=False)
+    private_key = db.Column(db.String(10000), nullable=False)
+    # image
+    image = db.Column(db.LargeBinary(length=10485760))
+    pic_uid = db.Column(db.String(16), nullable=False)
     # payment details
     crypto_address = db.Column(db.String(120), unique=True)
     total_payment = db.Column(db.Float, nullable=False, default=0.0)
-
-    payment_status = db.Column(db.Boolean, default=False)
-    pic_id = db.Column(db.Boolean, default=False)
-    status = db.Column(db.Boolean, default=False)
-    image = db.Column(db.LargeBinary(length=10485760))
-    pic_uid = db.Column(db.String(16))
-    pic_submit = db.Column(db.Boolean, default=False)
-    pic_rejected = db.Column(db.Boolean, default=False)
-
     amount_paid = db.Column(db.Float, default=0.0)
-    address_index = db.Column(db.Integer, unique=True)
     payment_increase = db.Column(db.Integer, default=0)
-    # creation date
+    # dates
     creation_date = db.Column(db.DateTime)
     expiration = db.Column(db.DateTime)
     payment_date = db.Column(db.DateTime)
+    # boolean values
+    payment_status = db.Column(db.Boolean, default=False)
+    pic_id = db.Column(db.Boolean, default=False)
+    status = db.Column(db.Boolean, default=False)
+    pic_submit = db.Column(db.Boolean, default=False)
+    pic_rejected = db.Column(db.Boolean, default=False)
+    address_index = db.Column(db.Integer, unique=True)
     terminated = db.Column(db.Boolean, default=False)
 
 
