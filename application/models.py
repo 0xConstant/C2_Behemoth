@@ -36,23 +36,6 @@ class Users(db.Model):
     # creation date
     creation_date = db.Column(db.DateTime)
     expiration = db.Column(db.DateTime)
-
-
-class UsersPaid(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(120))
-    hostname = db.Column(db.String(120))
-    uid = db.Column(db.String(120), unique=True)
-    email = db.Column(db.String(120))
-    ip_address = db.Column(db.String(120))
-    public_key = db.Column(db.String(4000))
-    private_key = db.Column(db.String(10000))
-    crypto_address = db.Column(db.String(120), unique=True)
-    total_payment = db.Column(db.Float, nullable=False, default=0.0)
-    status = db.Column(db.Boolean, default=False)
-    amount_paid = db.Column(db.Float, default=0.0)
-    address_index = db.Column(db.Integer, unique=True)
-    creation_date = db.Column(db.DateTime)
     payment_date = db.Column(db.DateTime)
 
 

@@ -4,7 +4,7 @@ from application.models import *
 from utilities.gen_rsa import gen_keys
 from app import login_manager, csrf, limiter, app
 from werkzeug.security import check_password_hash
-from application.models import Users, UsersPaid, UsersData
+from application.models import Users, UsersData
 from utilities.get_ip import user_geolocation
 from application.tasks import schedule_termination
 from bleach import clean
@@ -106,9 +106,8 @@ def new_user():
 def status(uid):
     try:
         uid = clean(uid)
-        paid_user = UsersPaid.query.filter_by(uid=uid).first()
         user = Users.query.filter_by(uid=uid).first()
-        if not uid or (not user and not paid_user):
+        if not (uid and user):
             return jsonify({"error": "Invalid UID or UID doesn't exist."}), 403
 
     except Exception as e:
@@ -139,7 +138,7 @@ def status(uid):
         except:
             return jsonify(status="danger", message="Error occurred, try again.")
 
-    return render_template("status.html", user=user, paid_user=paid_user, date=format_date,
+    return render_template("status.html", user=user, date=format_date,
                            current_time=current_time, time_diff=time_diff, remaining_time=remaining_time)
 
 
@@ -151,8 +150,8 @@ def download_decrypter(uid):
         if not uid:
             return jsonify({"error": "Invalid UID."}), 403
 
-        paid_user = UsersPaid.query.filter_by(uid=uid).first()
-        if not paid_user:
+        user = Users.query.filter_by(uid=uid).first()
+        if not user:
             return jsonify({"error": "UID doesn't exist or not a paid user."}), 403
 
         script = Decrypter.query.first()

