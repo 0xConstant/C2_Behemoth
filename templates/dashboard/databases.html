@@ -21,6 +21,10 @@
             <a class="nav-link" id="usersPaid-tab" data-toggle="tab" href="#usersPaid" role="tab"
                aria-controls="usersPaid" aria-selected="false">Users Paid</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="terminatedUsers-tab" data-toggle="tab" href="#terminatedUsers" role="tab"
+               aria-controls="terminatedUsers" aria-selected="false">Terminated users</a>
+        </li>
     </ul>
     <div class="tab-content" id="myTabContent">
 
@@ -58,12 +62,14 @@
                         <td class="wide-col uid-cell">{{ user.uid }}</td>
                         <td class="wide-col">{{ user.email }}</td>
                         <td class="wide-col">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal{{ loop.index }}">
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#userImageModal{{ loop.index }}">
                                 View Image
                             </button>
                             <!-- The Modal -->
-                            <div class="modal fade" id="imageModal{{ loop.index }}">
-                                <div class="modal-dialog modal-xl modal-dialog-centered"> <!-- Added the modal-dialog-centered class -->
+                            <div class="modal fade" id="userImageModal{{ loop.index }}">
+                                <div class="modal-dialog modal-xl modal-dialog-centered">
+                                    <!-- Added the modal-dialog-centered class -->
                                     <div class="modal-content">
 
                                         <!-- Modal Header -->
@@ -75,7 +81,8 @@
                                         <!-- Modal body -->
                                         <div class="modal-body">
                                             {% if user.image %}
-                                            <img src="data:image/png;base64,{{ user.image|b64encode }}" class="img-fluid w-100 h-100" alt="Pussy Image">
+                                                <img src="data:image/png;base64,{{ user.image|b64encode }}"
+                                                     class="img-fluid w-100 h-100" alt="Pussy Image">
                                             {% endif %}
                                         </div>
 
@@ -100,6 +107,7 @@
                 </tbody>
             </table>
         </div>
+
         <div class="tab-pane fade" id="usersPaid" role="tabpanel" aria-labelledby="usersPaid-tab">
             <div class="stats">
                 <strong>Total Entries:</strong> {{ users_paid_count }} <br>
@@ -136,12 +144,14 @@
                         <td class="wide-col uid-cell">{{ user_paid.uid }}</td>
                         <td class="wide-col">{{ user_paid.email }}</td>
                         <td class="wide-col">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#imageModal{{ loop.index }}">
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target="#userPaidModal{{ loop.index }}">
                                 View Image
                             </button>
                             <!-- The Modal -->
-                            <div class="modal fade" id="imageModal{{ loop.index }}">
-                                <div class="modal-dialog modal-xl modal-dialog-centered"> <!-- Added the modal-dialog-centered class -->
+                            <div class="modal fade" id="userPaidModal{{ loop.index }}">
+                                <div class="modal-dialog modal-xl modal-dialog-centered">
+                                    <!-- Added the modal-dialog-centered class -->
                                     <div class="modal-content">
 
                                         <!-- Modal Header -->
@@ -152,8 +162,9 @@
 
                                         <!-- Modal body -->
                                         <div class="modal-body">
-                                            {% if user.image %}
-                                            <img src="data:image/png;base64,{{ user.image|b64encode }}" class="img-fluid w-100 h-100" alt="Pussy Image">
+                                            {% if user_paid.image %}
+                                                <img src="data:image/png;base64,{{ user_paid.image|b64encode }}"
+                                                     class="img-fluid w-100 h-100" alt="Pussy Image">
                                             {% endif %}
                                         </div>
 
@@ -177,6 +188,67 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="tab-pane fade" id="terminatedUsers" role="tabpanel" aria-labelledby="terminatedUsers-tab">
+        <table class="table table-responsive table-striped mt-3" id="users-paid-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th class="wide-col">Username</th>
+                <th class="wide-col">Hostname</th>
+                <th class="wide-col">UID</th>
+                <th class="wide-col">Email</th>
+                <th class="wide-col">Image</th>
+                <th class="wide-col">Crypto Address</th>
+                <th class="wide-col">Total Payment</th>
+                <th class="wide-col">Terminated</th>
+                <th class="wide-col">Amount Paid</th>
+                <th class="wide-col">Creation Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for tuser in terminated_users %}
+                <tr>
+                    <td class="wide-col">{{ tuser.id }}</td>
+                    <td class="wide-col">{{ tuser.username }}</td>
+                    <td class="wide-col">{{ tuser.hostname }}</td>
+                    <td class="wide-col uid-cell">{{ tuser.uid }}</td>
+                    <td class="wide-col">{{ tuser.email }}</td>
+                    <td class="wide-col">
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                                data-target="#terminatedUserModal{{ loop.index }}">
+                            View Image
+                        </button>
+                        <div class="modal fade" id="terminatedUserModal{{ loop.index }}">
+                            <div class="modal-dialog modal-xl modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">View Image</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% if tuser.image %}
+                                            <img src="data:image/png;base64,{{ tuser.image|b64encode }}"
+                                                 class="img-fluid w-100 h-100" alt="Pussy Image">
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="wide-col">{{ tuser.crypto_address }}</td>
+                    <td class="wide-col">{{ tuser.total_payment }}</td>
+                    <td class="wide-col">{{ tuser.terminated }}</td>
+                    <td class="wide-col">{{ tuser.amount_paid }}</td>
+                    <td class="wide-col">{{ tuser.creation_date }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+
+
     </div>
     {% block scripts %}
         <script src="{{ url_for('static', filename='tab_search.js') }}"></script>

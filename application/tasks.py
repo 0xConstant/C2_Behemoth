@@ -3,11 +3,6 @@ from application.models import Users
 from utilities.wallet_api import wallet_balance
 from datetime import datetime
 from celery.schedules import crontab
-import pytz
-from datetime import timedelta
-
-
-tz = pytz.timezone('America/Toronto')
 
 
 @celery.task
@@ -20,8 +15,8 @@ def terminate_user(id):
     with app.app_context():
         user = Users.query.get(id)
         if user:
-            print(f"Deleting user: {user.uid}")
-            db.session.delete(user)
+            user.terminated = True
+            user.private_key = None
             db.session.commit()
 
 
@@ -37,7 +32,7 @@ def check_wallet():
     :return:
     """
     with app.app_context():
-        users = Users.query.all()
+        users = Users.query.filter_by(terminated=False).all()
         for user in users:
             try:
                 balance = wallet_balance(user.address_index)
@@ -45,7 +40,7 @@ def check_wallet():
                     user.amount_paid = balance
                     if user.amount_paid >= user.total_payment and user.pic_id:
                         user.status = True
-                        user.payment_date = datetime.now(tz=tz)
+                        user.payment_date = datetime.now().astimezone()
             except Exception as e:
                 print(e)
             db.session.commit()

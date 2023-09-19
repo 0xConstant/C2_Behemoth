@@ -37,6 +37,7 @@ class Users(db.Model):
     creation_date = db.Column(db.DateTime)
     expiration = db.Column(db.DateTime)
     payment_date = db.Column(db.DateTime)
+    terminated = db.Column(db.Boolean, default=False)
 
 
 class UsersData(db.Model):
