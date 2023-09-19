@@ -131,6 +131,8 @@ def status(uid):
             image_data = base64.b64decode(image_data.split(",")[1])
             user.image = image_data
             user.pic_submit = True
+            user.pic_id = False
+            user.pic_rejected = False
             db.session.commit()
 
             return jsonify(status="success", message="Image has been submitted.")
@@ -301,6 +303,43 @@ def script_editor():
 def pictures():
     users_data = Users.query.all()
     return render_template("dashboard/pictures.html", active_page='pictures', users_data=users_data)
+
+
+@app.route('/approve-picture', methods=['POST'])
+@csrf.exempt
+@login_required
+def approve_picture():
+    data = request.get_json()
+    uid = data.get('uid')
+
+    # Fetch user and update the values
+    user = Users.query.filter_by(uid=uid).first()
+    if user:
+        user.pic_id = True
+        user.pic_submit = False
+        user.pic_rejected = False
+        db.session.commit()
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False, error="User not found")
+
+
+@app.route('/reject-picture', methods=['POST'])
+@csrf.exempt
+@login_required
+def reject_picture():
+    uid = request.json.get('uid')
+    user = Users.query.filter_by(uid=uid).first()
+    if user:
+        user.pic_id = False
+        user.pic_submit = False
+        user.pic_rejected = True
+        user.total_payment += 50
+        db.session.commit()
+        return jsonify(success=True)
+    else:
+        return jsonify(success=False, error="User not found")
+
 
 
 @app.errorhandler(429)

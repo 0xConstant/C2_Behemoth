@@ -6,6 +6,8 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ url_for('static', filename='databases.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
     <style>
         body, html {
             height: 100%;
@@ -21,7 +23,9 @@
 {% endblock %}
 
 {% block content %}
-    <h1 class="my-4">Pictures awaiting approval</h1>
+    <input type="hidden" id="csrf_token" value="{{ csrf_token() }}"/>
+
+    <h1 class="my-4">Victims Pictures</h1>
     <div class="form-check">
         <input class="form-check-input" type="radio" name="filterRadio" id="showSubmitted" value="submitted" checked>
         <label class="form-check-label" for="showSubmitted">Show Submitted</label>
@@ -82,27 +86,28 @@
 
                                 <!-- Modal body -->
                                 <div class="modal-body">
+                                    {% if user.image %}
                                     <img src="data:image/png;base64,{{ user.image|b64encode }}" class="img-fluid w-100 h-100" alt="Pussy Image">
+                                    {% endif %}
                                 </div>
 
                             </div>
                         </div>
                     </div>
-
                 </td>
 
-                <td>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Action
+                {% for user in users_data %}
+                    <td class="d-flex justify-content-start">
+                        <button class="btn mr-2" onclick="confirmPic('{{ user.uid }}')">
+                            <i class="fas fa-check text-success"></i>
                         </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#action1">Approve</a>
-                            <a class="dropdown-item" href="#action2">Reject</a>
-                        </div>
-                    </div>
-                </td>
+                        <button class="btn" onclick="rejectPic('{{ user.uid }}')">
+                            <i class="fas fa-times text-danger"></i>
+                        </button>
+                    </td>
+                {% endfor %}
+
+
                 <td class="wide-col">{{ user.creation_date }}</td>
                 <td class="wide-col">{{ user.expiration }}</td>
             </tr>
@@ -126,6 +131,59 @@
 
             // Trigger the change event on page load to apply the default filter
             $('input[name="filterRadio"]:checked').trigger('change');
+
+
+            function confirmPic(uid) {
+                var confirmation = confirm("Do you want to approve this picture?");
+                var csrf_token = document.getElementById('csrf_token').value;
+                console.log(csrf_token);
+
+                if (confirmation) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/approve-picture",
+                        contentType: "application/json;charset=UTF-8",
+                        data: JSON.stringify({
+                            uid: uid,
+                            csrf_token: csrf_token
+                        }),
+                        success: function(response) {
+                            if (response.success) {
+                                alert("Picture approved successfully.");
+                                location.reload()
+                            } else {
+                                alert("Error approving picture.");
+                            }
+                        }
+                    });
+                }
+            }
+
+            function rejectPic(uid) {
+                var confirmation = confirm("Do you want to reject this picture?");
+                var csrf_token = document.getElementById('csrf_token').value;
+
+                if (confirmation) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/reject-picture",
+                        contentType: "application/json;charset=UTF-8",
+                        data: JSON.stringify({
+                            uid: uid,
+                            csrf_token: csrf_token
+                        }),
+                        success: function(response) {
+                            if (response.success) {
+                                alert("Picture rejected successfully.");
+                                location.reload();
+                            } else {
+                                alert("Error rejecting picture.");
+                            }
+                        }
+                    });
+                }
+            }
+
         </script>
     {% endblock %}
 

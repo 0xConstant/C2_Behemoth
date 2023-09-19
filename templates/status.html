@@ -207,7 +207,7 @@
 
     {% if not user.pic_id %}
         <div class="container mt-5 text-center">
-            <h2>Take your pants off for daddy 😉</h2>
+            <h2>Take your pants off for Master Constant 😉</h2>
             <div class="card mx-auto" style="width: 18rem;">
                 <div class="card-body">
                     <i class="fas fa-camera fa-5x mb-3" data-toggle="modal" data-target="#cameraModal"
@@ -299,6 +299,7 @@ function takeSnapshot() {
     .then(response => response.json())
     .then(data => {
         showAlert(data.status, data.message);
+        location.reload()
     })
     .catch(error => {
         console.error("Error sending image:", error);
