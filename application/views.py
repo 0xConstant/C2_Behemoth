@@ -161,7 +161,7 @@ def download_decrypter(uid):
             response.headers['Content-Disposition'] = f'attachment; filename={script.filename}'
             return response
         else:
-            return "No script available", 404
+            return jsonify({"error": "Permission denied."}), 403
     except:
         return jsonify({"error": "An error occurred. Please try again later."}), 500
 
@@ -177,6 +177,7 @@ def download_private_key(uid):
         user = Users.query.filter_by(uid=uid, status=True).first()
         if not user:
             return jsonify({"error": "Invalid UID or payment wasn't made."}), 403
+
         response = make_response(user.private_key)
         response.headers['Content-Type'] = 'text/plain'
         response.headers['Content-Disposition'] = 'attachment; filename=private_key.txt'

@@ -74,7 +74,7 @@
 <div class="container mt-5">
     <div class="header text-center">
         <h1>{% if user.status %}Payment Success{% else %}Data Expiration{% endif %}</h1>
-        {% if user %}
+        {% if not user.status %}
             <div class="countdown">
                 <span id="hours">00 hours</span>
                 <span id="minutes">00 minutes</span>
