@@ -27,20 +27,24 @@ def schedule_termination(id, expiration):
 @celery.task
 def check_wallet():
     """
-    This task is used for checking funds of each Monero account balance for every user to verify funds.
-    It's setup with Celery beat to run every 1 minute, modify this if you face performance issues.
-    :return:
+    This task checks funds of each Monero account balance for every user to verify funds.
+    It's set up with Celery beat to run every 1 minute; modify this if you face performance issues.
     """
     with app.app_context():
         users = Users.query.filter_by(terminated=False).all()
         for user in users:
             try:
-                balance = wallet_balance(user.address_index)
-                if balance > 0:
-                    user.amount_paid += balance
+                current_balance = wallet_balance(user.address_index)
+                new_payment = current_balance - user.previous_balance
+
+                if new_payment > 0:
+                    user.amount_paid += new_payment
+                    user.previous_balance = current_balance
+
                     if user.amount_paid >= user.total_payment and user.pic_id:
                         user.status = True
                         user.payment_date = datetime.now().astimezone()
+
             except Exception as e:
                 print(e)
             db.session.commit()

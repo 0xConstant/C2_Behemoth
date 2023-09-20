@@ -26,6 +26,7 @@ class Users(db.Model):
     total_payment = db.Column(db.Float, nullable=False, default=0.0)
     amount_paid = db.Column(db.Float, default=0.0)
     payment_increase = db.Column(db.Integer, default=0)
+    previous_balance = db.Column(db.Float, default=0.0)
     # dates
     creation_date = db.Column(db.DateTime)
     expiration = db.Column(db.DateTime)
