@@ -27,12 +27,12 @@ class Users(db.Model):
     amount_paid = db.Column(db.Float, default=0.0)
     payment_increase = db.Column(db.Integer, default=0)
     previous_balance = db.Column(db.Float, default=0.0)
+    payment_status = db.Column(db.Boolean, default=False)
     # dates
     creation_date = db.Column(db.DateTime)
     expiration = db.Column(db.DateTime)
     payment_date = db.Column(db.DateTime)
     # boolean values
-    payment_status = db.Column(db.Boolean, default=False)
     pic_id = db.Column(db.Boolean, default=False)
     status = db.Column(db.Boolean, default=False)
     pic_submit = db.Column(db.Boolean, default=False)

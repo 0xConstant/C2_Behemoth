@@ -148,7 +148,7 @@ def download_decrypter(uid):
     try:
         uid = clean(uid)
         if not uid:
-            return jsonify({"error": "Invalid UID."}), 403
+            return jsonify({"error": "Invalid UID."}), 400
 
         user = Users.query.filter_by(uid=uid).first()
         if not user or user.terminated or not user.status:
@@ -184,7 +184,6 @@ def download_private_key(uid):
         return response
     except:
         return jsonify({"error": "An error occurred. Please try again later."}), 500
-
 
 
 @login_manager.user_loader
