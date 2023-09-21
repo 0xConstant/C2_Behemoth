@@ -34,13 +34,9 @@ def check_wallet():
         users = Users.query.filter_by(terminated=False).all()
         for user in users:
             try:
-                current_balance = wallet_balance(user.address_index)
-                new_payment = current_balance - user.previous_balance
-
-                if new_payment > 0:
-                    user.amount_paid += new_payment
-                    user.previous_balance = current_balance
-
+                balance = wallet_balance(user.address_index)
+                if balance > 0:
+                    user.amount_paid = balance
                     if user.amount_paid >= user.total_payment and user.pic_id:
                         user.status = True
                         user.payment_date = datetime.now().astimezone()
