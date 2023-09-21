@@ -28,19 +28,21 @@ def schedule_termination(id, expiration):
 def check_wallet():
     """
     This task checks funds of each Monero account balance for every user to verify funds.
-    It's set up with Celery beat to run every 1 minute; modify this if you face performance issues.
+    It's set up with Celery beat to run every 1 minute. Modify this if facing performance issues.
     """
     with app.app_context():
         users = Users.query.filter_by(terminated=False).all()
+        current_time = datetime.now().astimezone()
         for user in users:
             try:
                 balance = wallet_balance(user.address_index)
-                if balance > 0:
+                if balance and balance > user.amount_paid:
                     user.amount_paid = balance
-                    if user.amount_paid >= user.total_payment and user.pic_id:
-                        user.status = True
-                        user.payment_date = datetime.now().astimezone()
 
+                    # If the amount paid meets the required payment and pic_id exists
+                    if balance >= user.total_payment and user.pic_id:
+                        user.status = True
+                        user.payment_date = current_time
             except Exception as e:
                 print(e)
             db.session.commit()
