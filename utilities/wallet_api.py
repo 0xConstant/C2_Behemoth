@@ -1,5 +1,11 @@
 import requests, json
 from decimal import Decimal, getcontext
+from requests.auth import HTTPDigestAuth
+
+
+SESSION = requests.session()
+USERNAME = "kasra"
+PASSWORD = "jackson"
 
 
 def convert_xmr_usd(amount):
@@ -11,7 +17,7 @@ def convert_xmr_usd(amount):
     api = "https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=USD"
     usd = 0
     try:
-        resp = requests.get(url=api, timeout=10).json()
+        resp = SESSION.get(url=api, timeout=10).json()
         exchange_rate = resp["USD"]
         getcontext().prec = 28
         usd = Decimal(amount) * Decimal(exchange_rate)
@@ -39,7 +45,7 @@ def wallet_balance(account_index):
         }
     }
     try:
-        resp = requests.post(url=url, headers=headers, data=json.dumps(data), timeout=10).json()
+        resp = SESSION.post(url=url, headers=headers, data=json.dumps(data), auth=HTTPDigestAuth(USERNAME, PASSWORD), timeout=10).json()
         balance = resp["result"]["balance"] / 1e12
     except:
         return False
@@ -64,7 +70,7 @@ def gen_wallet(account_name):
     }
     headers = {'Content-Type': 'application/json'}
     try:
-        resp = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=10).json()
+        resp = SESSION.post(url=url, data=json.dumps(data), headers=headers, auth=HTTPDigestAuth(USERNAME, PASSWORD), timeout=10).json()
         if resp["result"]["address"]:
             if validate_wallet(resp["result"]["address"]):
                 account_info = {
@@ -92,11 +98,10 @@ def validate_wallet(wallet_address):
         }
     }
 
-    response = requests.post(url, json=data, headers=headers, timeout=10).json()
+    response = SESSION.post(url, json=data, headers=headers, auth=HTTPDigestAuth(USERNAME, PASSWORD), timeout=10).json()
     valid = response["result"]["valid"]
     if valid:
         return True
     return False
-
 
 
