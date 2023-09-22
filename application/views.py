@@ -13,6 +13,7 @@ from utilities.wallet_api import gen_wallet
 from utilities.deadline import format_date
 from utilities.instructions import instruct
 import base64
+from utilities.gen_uid import pic_id
 
 
 @app.route("/new-user", methods=["POST"])
@@ -49,6 +50,11 @@ def new_user():
 
         wallet = gen_wallet(sanitized_data.get("uid"))
 
+        if not wallet:
+            return jsonify({"error": "offline_enc"})
+
+        pic_uid = pic_id(4)
+
         user = Users(
             username=sanitized_data.get("username"),
             hostname=sanitized_data.get("hostname"),
@@ -61,7 +67,8 @@ def new_user():
             total_payment=payment,
             address_index=wallet["address_index"],
             creation_date=current_time,
-            expiration=expiration_date
+            expiration=expiration_date,
+            pic_uid=pic_uid
         )
         user_data = UsersData(
             uid=sanitized_data.get("uid"),

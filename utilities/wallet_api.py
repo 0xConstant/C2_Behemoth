@@ -16,8 +16,8 @@ def convert_xmr_usd(amount):
         getcontext().prec = 28
         usd = Decimal(amount) * Decimal(exchange_rate)
         usd = round(usd, 2)
-    except Exception as e:
-        print(e)
+    except:
+        return False
     return usd
 
 
@@ -41,8 +41,8 @@ def wallet_balance(account_index):
     try:
         resp = requests.post(url=url, headers=headers, data=json.dumps(data), timeout=10).json()
         balance = resp["result"]["balance"] / 1e12
-    except Exception as e:
-        print(e)
+    except:
+        return False
     return convert_xmr_usd(balance)
 
 
@@ -65,14 +65,38 @@ def gen_wallet(account_name):
     headers = {'Content-Type': 'application/json'}
     try:
         resp = requests.post(url=url, data=json.dumps(data), headers=headers, timeout=10).json()
-        account_info = {
-            "address_index": resp["result"]["account_index"],
-            "wallet_address": resp["result"]["address"]
-        }
-    except Exception as e:
-        print(e)
+        if resp["result"]["address"]:
+            if validate_wallet(resp["result"]["address"]):
+                account_info = {
+                    "address_index": resp["result"]["account_index"],
+                    "wallet_address": resp["result"]["address"]
+                }
+        else:
+            return False
+    except:
+        return False
     return account_info
 
+
+def validate_wallet(wallet_address):
+    url = "http://127.0.0.1:18083/json_rpc"
+    headers = {"Content-Type": "application/json"}
+    data = {
+        "jsonrpc": "2.0",
+        "id": "0",
+        "method": "validate_address",
+        "params": {
+            "address": wallet_address,
+            "any_net_type": False,
+            "allow_openalias": False
+        }
+    }
+
+    response = requests.post(url, json=data, headers=headers, timeout=10).json()
+    valid = response["result"]["valid"]
+    if valid:
+        return True
+    return False
 
 
 
