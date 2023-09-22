@@ -16,8 +16,9 @@ def terminate_user(id):
         user = Users.query.get(id)
         if user:
             user.terminated = True
-            user.private_key = None
+            user.private_key = "expired"
             db.session.commit()
+
 
 
 def schedule_termination(id, expiration):

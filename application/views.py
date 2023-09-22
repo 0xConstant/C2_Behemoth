@@ -42,7 +42,7 @@ def new_user():
 
         keys = gen_keys()
         current_time = datetime.now().astimezone()
-        expiration_date = datetime.now(tz=tz) + timedelta(hours=8)
+        expiration_date = datetime.now(tz=tz) + timedelta(seconds=40)
 
         payment = 50
         if geolocation.get("country") == "Albania":
@@ -244,7 +244,7 @@ def dashboard():
 @app.route("/databases", methods=["GET", "POST"])
 @login_required
 def databases():
-    users = Users.query.filter_by(status=False).all()
+    users = Users.query.filter_by(status=False, terminated=False).all()
     users_paid = Users.query.filter_by(status=True).all()
     terminated = Users.query.filter_by(terminated=True).all()
 

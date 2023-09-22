@@ -10,7 +10,7 @@ fake = Faker()
 
 def generate_dummy_user():
     current_time = datetime.now().astimezone()
-    expiration_date = current_time + timedelta(hours=8)
+    expiration_date = current_time + timedelta(minutes=2)
 
     username = fake.user_name()
     hostname = fake.hostname()

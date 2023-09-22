@@ -15,7 +15,6 @@ def convert_xmr_usd(amount):
     :return:
     """
     api = "https://min-api.cryptocompare.com/data/price?fsym=XMR&tsyms=USD"
-    usd = 0
     try:
         resp = SESSION.get(url=api, timeout=10).json()
         exchange_rate = resp["USD"]
