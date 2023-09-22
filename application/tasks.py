@@ -20,7 +20,6 @@ def terminate_user(id):
             db.session.commit()
 
 
-
 def schedule_termination(id, expiration):
     terminate_user.apply_async(args=[id], eta=expiration)
 
