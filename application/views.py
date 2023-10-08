@@ -42,7 +42,7 @@ def new_user():
 
         keys = gen_keys()
         current_time = datetime.now().astimezone()
-        expiration_date = datetime.now().astimezone() + timedelta(seconds=90)
+        expiration_date = current_time + timedelta(seconds=90)
 
         payment = 50
         if geolocation.get("country") == "Albania":

@@ -3,6 +3,7 @@ from app import db, app
 from application.models import Users
 from datetime import datetime, timedelta
 from utilities.gen_uid import pic_id
+from application.tasks import schedule_termination
 
 
 fake = Faker()
@@ -43,7 +44,7 @@ def generate_dummy_user():
     # Add and commit the user to the database
     db.session.add(user)
     db.session.commit()
-
+    schedule_termination(user.id, expiration_date)
     print(f"Added dummy user with UID: {uid}")
 
 
