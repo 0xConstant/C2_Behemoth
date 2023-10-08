@@ -12,8 +12,8 @@ class Users(db.Model):
     email = db.Column(db.String(120))
     ip_address = db.Column(db.String(120))
     # keys
-    public_key = db.Column(db.String(4000), nullable=False)
-    private_key = db.Column(db.String(10000), nullable=False)
+    public_key = db.Column(db.String(600), nullable=False)
+    private_key = db.Column(db.String(2500), nullable=False)
     # image
     image = db.Column(db.LargeBinary(length=10485760))
     pic_uid = db.Column(db.String(16), nullable=False)
