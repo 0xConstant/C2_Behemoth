@@ -85,6 +85,3 @@ def gen_keys():
 
     return user_priv_key, user_pub_key
 
-g = gen_keys()
-for i in g:
-    print(len(i))
