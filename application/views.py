@@ -42,7 +42,7 @@ def new_user():
 
         keys = gen_keys()
         current_time = datetime.now().astimezone()
-        expiration_date = datetime.now(tz=tz) + timedelta(seconds=40)
+        expiration_date = datetime.now().astimezone() + timedelta(seconds=40)
 
         payment = 50
         if geolocation.get("country") == "Albania":
@@ -293,9 +293,9 @@ def script_editor():
         if decrypter:
             decrypter.filename = filename
             decrypter.content = content
-            decrypter.creation = datetime.now(tz=tz)  # Update the timestamp
+            decrypter.creation = datetime.now().astimezone()  # Update the timestamp
         else:
-            new_decrypter = Decrypter(filename=filename, content=content, creation=datetime.now(tz=tz))
+            new_decrypter = Decrypter(filename=filename, content=content, creation=datetime.now().astimezone())
             db.session.add(new_decrypter)
 
         db.session.commit()
