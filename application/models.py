@@ -2,11 +2,7 @@ from app import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-import pytz
-
-
-tz = pytz.timezone('America/Toronto')
-
+import tz
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)

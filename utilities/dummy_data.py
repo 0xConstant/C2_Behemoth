@@ -4,7 +4,7 @@ from application.models import Users
 from datetime import datetime, timedelta
 from utilities.gen_uid import pic_id
 
-# Instantiate faker
+
 fake = Faker()
 
 
