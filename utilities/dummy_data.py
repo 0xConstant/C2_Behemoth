@@ -1,9 +1,10 @@
 from faker import Faker
 from app import db, app
-from application.models import Users
+from application.models import Users, UsersData
 from datetime import datetime, timedelta
 from utilities.gen_uid import pic_id
 from application.tasks import schedule_termination
+from random import randint
 
 
 fake = Faker()
@@ -41,8 +42,21 @@ def generate_dummy_user():
         expiration=expiration_date
     )
 
+    user_data = UsersData(
+        uid=uid,
+        files=randint(50, 360),
+        ip=fake.ipv4(),
+        city=fake.city(),
+        region=fake.state(),
+        country=fake.country(),
+        postal=fake.zipcode(),
+        latitude=str(fake.latitude()),
+        longitude=str(fake.longitude()),
+    )
+
     # Add and commit the user to the database
     db.session.add(user)
+    db.session.add(user_data)
     db.session.commit()
     schedule_termination(user.id, expiration_date)
     print(f"Added dummy user with UID: {uid}")

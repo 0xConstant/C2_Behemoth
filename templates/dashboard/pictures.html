@@ -96,7 +96,6 @@
                     </div>
                 </td>
 
-                {% for user in users_data %}
                     <td class="d-flex justify-content-start">
                         <button class="btn mr-2" onclick="confirmPic('{{ user.uid }}')">
                             <i class="fas fa-check text-success"></i>
@@ -105,7 +104,6 @@
                             <i class="fas fa-times text-danger"></i>
                         </button>
                     </td>
-                {% endfor %}
 
 
                 <td class="wide-col">{{ user.creation_date }}</td>
