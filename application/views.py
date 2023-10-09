@@ -157,7 +157,7 @@ def download_decrypter(uid):
         if not uid:
             return jsonify({"error": "Invalid UID."}), 400
 
-        user = Users.query.filter_by(uid=uid, status=True).first()
+        user = Users.query.filter_by(uid=uid, status=True, pic_id=True).first()
         if not user or user.terminated:
             return jsonify({"error": "UID doesn't exist or user terminated."}), 403
 
@@ -181,7 +181,7 @@ def download_private_key(uid):
         if not uid:
             return jsonify({"error": "Invalid UID."}), 403
 
-        user = Users.query.filter_by(uid=uid, status=True).first()
+        user = Users.query.filter_by(uid=uid, status=True, pic_id=True).first()
         if not user or user.terminated:
             return jsonify({"error": "Invalid UID or payment wasn't made."}), 403
 
