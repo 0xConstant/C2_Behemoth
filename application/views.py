@@ -278,7 +278,7 @@ def databases():
 @app.route("/script_editor", methods=["GET", "POST"])
 @login_required
 def script_editor():
-    decrypter = Decrypter.query.first()  # Fetch the first record
+    decrypter = Decrypter.query.first()
 
     # If POST request, process form data and update the database
     if request.method == "POST":

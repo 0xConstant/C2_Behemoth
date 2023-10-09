@@ -52,7 +52,7 @@ def check_wallet():
 def update_payments():
     with app.app_context():
         current_time = datetime.now().astimezone().replace(tzinfo=None)
-        users = Users.query.filter_by(terminated=False).all()
+        users = Users.query.filter_by(terminated=False, pic_id=False).all()
 
         for user in users:
             time_difference = current_time - user.creation_date
