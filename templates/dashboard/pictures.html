@@ -75,16 +75,12 @@
                     </button>
                     <!-- The Modal -->
                     <div class="modal fade" id="imageModal{{ loop.index }}">
-                        <div class="modal-dialog modal-xl modal-dialog-centered"> <!-- Added the modal-dialog-centered class -->
+                        <div class="modal-dialog modal-xl modal-dialog-centered">
                             <div class="modal-content">
-
-                                <!-- Modal Header -->
                                 <div class="modal-header">
                                     <h4 class="modal-title">View Image</h4>
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                 </div>
-
-                                <!-- Modal body -->
                                 <div class="modal-body">
                                     {% if user.image %}
                                     <img src="data:image/png;base64,{{ user.image|b64encode }}" class="img-fluid w-100 h-100" alt="Pussy Image">

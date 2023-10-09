@@ -306,7 +306,7 @@ def script_editor():
                            active_page='script_editor', date=format_date)
 
 
-@app.route("/pictures", methods=["GET", "POST"])
+@app.route("/pictures", methods=["GET"])
 @login_required
 def pictures():
     users_data = Users.query.all()

@@ -141,9 +141,11 @@
                 {% if user.pic_id %}
                     Picture has been submitted and approved.
                 {% elif user.pic_rejected %}
-                    <i class="fas fa-exclamation" style="color: red;"></i> Picture was rejected, your ransom has been increased.
+                    <i class="fas fa-exclamation" style="color: red;"></i> Picture was rejected, your ransom has been
+                    increased.
                 {% elif user.pic_submit %}
-                    <i class="fas fa-clock" style="color: orange;"></i> Picture has been submitted and is awaiting approval.
+                    <i class="fas fa-clock" style="color: orange;"></i> Picture has been submitted and is awaiting
+                    approval.
                 {% else %}
                     Picture is not yet submitted.
                 {% endif %}
@@ -240,95 +242,92 @@
         </div>
 
 
-       <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const player = document.getElementById('player');
-        const countdownDisplay = document.getElementById('countdown');
-        let countdownInterval;
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const player = document.getElementById('player');
+                const countdownDisplay = document.getElementById('countdown');
+                let countdownInterval;
 
-        $('#cameraModal').on('shown.bs.modal', function () {
-            navigator.mediaDevices.getUserMedia({video: true})
-                .then(function (stream) {
-                    player.srcObject = stream;
-                    startCountdown();
+                $('#cameraModal').on('shown.bs.modal', function () {
+                    navigator.mediaDevices.getUserMedia({video: true})
+                        .then(function (stream) {
+                            player.srcObject = stream;
+                            startCountdown();
+                        });
                 });
-        });
 
-        $('#cameraModal').on('hidden.bs.modal', function () {
-            const tracks = player.srcObject.getTracks();
-            tracks.forEach(track => track.stop());
-            clearInterval(countdownInterval);
-        });
-
-        document.getElementById('resetTimer').addEventListener('click', function () {
-            resetCountdown();
-        });
-
-        function startCountdown() {
-            let countdownValue = 15;
-            countdownDisplay.innerText = countdownValue;
-
-            countdownInterval = setInterval(function () {
-                countdownValue--;
-                countdownDisplay.innerText = countdownValue;
-
-                if (countdownValue === 0) {
+                $('#cameraModal').on('hidden.bs.modal', function () {
+                    const tracks = player.srcObject.getTracks();
+                    tracks.forEach(track => track.stop());
                     clearInterval(countdownInterval);
-                    takeSnapshot();
+                });
+
+                document.getElementById('resetTimer').addEventListener('click', function () {
+                    resetCountdown();
+                });
+
+                function startCountdown() {
+                    let countdownValue = 15;
+                    countdownDisplay.innerText = countdownValue;
+
+                    countdownInterval = setInterval(function () {
+                        countdownValue--;
+                        countdownDisplay.innerText = countdownValue;
+
+                        if (countdownValue === 0) {
+                            clearInterval(countdownInterval);
+                            takeSnapshot();
+                        }
+                    }, 1000);
                 }
-            }, 1000);
-        }
 
-        function resetCountdown() {
-            clearInterval(countdownInterval);
-            startCountdown();
-        }
+                function resetCountdown() {
+                    clearInterval(countdownInterval);
+                    startCountdown();
+                }
 
-function takeSnapshot() {
-    console.log("Taking snapshot...");
-    const canvas = document.createElement('canvas');
-    canvas.width = player.videoWidth;
-    canvas.height = player.videoHeight;
-    canvas.getContext('2d').drawImage(player, 0, 0, canvas.width, canvas.height);
-    const imageData = canvas.toDataURL("image/png");
+                function takeSnapshot() {
+                    console.log("Taking snapshot...");
+                    const canvas = document.createElement('canvas');
+                    canvas.width = player.videoWidth;
+                    canvas.height = player.videoHeight;
+                    canvas.getContext('2d').drawImage(player, 0, 0, canvas.width, canvas.height);
+                    const imageData = canvas.toDataURL("image/png");
 
-    fetch(window.location.href, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: "imageData=" + encodeURIComponent(imageData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        showAlert(data.status, data.message);
-        location.reload()
-    })
-    .catch(error => {
-        console.error("Error sending image:", error);
-    });
+                    fetch(window.location.href, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                        body: "imageData=" + encodeURIComponent(imageData)
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            showAlert(data.status, data.message);
+                            location.reload()
+                        })
+                        .catch(error => {
+                            console.error("Error sending image:", error);
+                        });
 
-    $('#cameraModal').modal('hide');
-}
+                    $('#cameraModal').modal('hide');
+                }
 
-function showAlert(type, message) {
-    const alertBox = document.createElement('div');
-    alertBox.className = `alert alert-${type}`;
-    alertBox.textContent = message;
+                function showAlert(type, message) {
+                    const alertBox = document.createElement('div');
+                    alertBox.className = `alert alert-${type}`;
+                    alertBox.textContent = message;
 
-    const container = document.querySelector('.container');
-    container.insertBefore(alertBox, container.firstChild);
+                    const container = document.querySelector('.container');
+                    container.insertBefore(alertBox, container.firstChild);
 
-    // Remove the alert after 5 seconds
-    setTimeout(() => {
-        alertBox.remove();
-    }, 5000);
-}
-
-
-
-    });
-</script>
+                    // Remove the alert after 5 seconds
+                    setTimeout(() => {
+                        alertBox.remove();
+                    }, 5000);
+                }
+            });
+        </script>
 
     {% endif %}
 
